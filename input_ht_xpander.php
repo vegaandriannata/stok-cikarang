@@ -1,16 +1,16 @@
 <?php
-// Koneksi ke database (gantilah dengan informasi koneksi yang sesuai)
+
 include 'koneksi.php';
 
-// Inisialisasi variabel dengan nilai default
+
 $tanggal = $shift = $nama = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
 
-// Inisialisasi pesan untuk informasi hasil penyimpanan
+
 $pesan = '';
 
-// Periksa apakah form telah disubmit
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil data dari formulir jika tersedia
+    
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
 	$shift = isset($_POST['shift']) ? $_POST['shift'] : '';
     $nama = isset($_POST['nama']) ? $_POST['nama'] : '';
@@ -22,21 +22,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cbg = isset($_POST['cbg']) ? $_POST['cbg'] : '';
     
 
-    // Query untuk menyimpan data ke dalam tabel ht_xpander
+    
     $sql = "INSERT INTO ht_xpander (tanggal, shift, nama, tdp, tbg, hdp, hbg, cdp, cbg)
             VALUES ('$tanggal', '$shift', '$nama', '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        // Arahkan ke halaman stok_ht_xpander.php setelah berhasil disimpan
+        
         header("Location: stok_ht_xpander.php");
-        exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
+        exit(); 
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
 
-// Tutup koneksi
+
 $koneksi->close();
 ?>
 
@@ -84,7 +84,7 @@ $koneksi->close();
 
     <h1>Form Input Stok HT Xpander</h1>
 
-    <?php echo $pesan; // Tampilkan pesan informasi ?>
+    <?php echo $pesan;  ?>
 
     <form action="" method="post">
         <label for="tanggal">Tanggal:</label>

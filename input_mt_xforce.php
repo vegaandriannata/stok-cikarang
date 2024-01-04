@@ -1,17 +1,17 @@
 <?php
-// Koneksi ke database (gantilah dengan informasi koneksi yang sesuai)
+
 include 'koneksi.php';
 
-// Inisialisasi variabel dengan nilai default
+
 $tanggal = $shift = $keterangan = '';
 $kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmkr = $kmkn= $htdp = $htbg = '';
 
-// Inisialisasi pesan untuk informasi hasil penyimpanan
+
 $pesan = '';
 
-// Periksa apakah form telah disubmit
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil data dari formulir jika tersedia
+    
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
     $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
     $shift = isset($_POST['shift']) ? $_POST['shift'] : '';
@@ -26,20 +26,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$htdp = isset($_POST['htdp']) ? $_POST['htdp'] : '';
     $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
 
-    // Query untuk menyimpan data ke dalam tabel mt_xforce
+    
     $sql = "INSERT INTO mt_xforce (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmkr, kmkn, htdp, htbg)
             VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmkr', '$kmkn', '$htdp', '$htbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        // Arahkan ke halaman stok_mt_xforce.php setelah berhasil disimpan
+        
         header("Location: stok_mt_xforce.php");
-        exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
+        exit(); 
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
-// Tutup koneksi
+
 $koneksi->close();
 ?>
 
@@ -86,7 +86,7 @@ $koneksi->close();
 <body>
     <h1>Form Input Stok Bahan Mentah Xforce</h1>
 
-    <?php echo $pesan; // Tampilkan pesan informasi ?>
+    <?php echo $pesan;  ?>
 
     <form action="" method="post">
         <label for="tanggal">Tanggal:</label>
