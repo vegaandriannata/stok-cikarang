@@ -74,7 +74,6 @@
 			<tr>
 				<th>Depan</th>
                 <th>Bagasi</th>
-				
                 <th>Sopir Kiri</th>
 				<th>Sopir Kanan</th>
 				<th>Penumpang Kiri</th>
@@ -91,6 +90,18 @@
         </thead>
         <tbody>
             <?php
+			$totalStokMasukMold = [
+                'kdp' => 0, 'kbg' => 0, 'kpkr' => 0, 'kpkn' => 0,
+                'kskr' => 0, 'kskn' => 0, 'kmdkr' => 0, 'kmdkn' => 0,
+                'kmbkr' => 0, 'kmbkn' => 0
+            ];
+            $totalStokKeluarMold = [
+                'kdp' => 0, 'kbg' => 0, 'kpkr' => 0, 'kpkn' => 0,
+                'kskr' => 0, 'kskn' => 0, 'kmdkr' => 0, 'kmdkn' => 0,
+                'kmbkr' => 0, 'kmbkn' => 0
+            ];
+            $totalStokMasukHeating = ['htdp' => 0, 'htbg' => 0];
+            $totalStokKeluarHeating = ['htdp' => 0, 'htbg' => 0];
 			$no = 1;
                 // Sertakan file koneksi.php
                 include 'koneksi.php';
@@ -107,6 +118,25 @@
                         echo "<td>" . $row["tanggal"] . "</td>";
 						echo "<td>" . $row["shift"] . "</td>";
 						echo "<td>" . $row["keterangan"] . "</td>";
+						
+						if ($row["keterangan"] == "Stok Masuk") {
+                        foreach ($totalStokMasukMold as $key => $value) {
+                            $totalStokMasukMold[$key] += $row[$key];
+                        }
+
+                        foreach ($totalStokMasukHeating as $key => $value) {
+                            $totalStokMasukHeating[$key] += $row[$key];
+                        }
+                    } elseif ($row["keterangan"] == "Stok Keluar") {
+                        foreach ($totalStokKeluarMold as $key => $value) {
+                            $totalStokKeluarMold[$key] += $row[$key];
+                        }
+
+                        foreach ($totalStokKeluarHeating as $key => $value) {
+                            $totalStokKeluarHeating[$key] += $row[$key];
+                        }
+                    }
+						
                         echo "<td>" . $row["kdp"] . "</td>";
                         echo "<td>" . $row["kbg"] . "</td>";
                         echo "<td>" . $row["kpkr"] . "</td>"; 
@@ -120,13 +150,35 @@
 						echo "<td>" . $row["htdp"] . "</td>"; 
 						echo "<td>" . $row["htbg"] . "</td>";
                         
-                        echo "</tr>";
-						$no++;
-                    }
-                } else {
-                    echo "<tr><td colspan='5'>Tidak ada data</td></tr>";
-                }
+                        
 
+        echo "</tr>";
+        $no++;
+    }
+    // Display footer row
+    echo "<tr>";
+                echo "<td colspan='4'>Total Stok Masuk</td>";
+                foreach ($totalStokMasukMold as $value) {
+                    echo "<td>$value</td>";
+                }
+                foreach ($totalStokMasukHeating as $value) {
+                    echo "<td>$value</td>";
+                }
+                echo "</tr>";
+
+                echo "<tr>";
+                echo "<td colspan='4'>Total Stok Keluar</td>";
+                foreach ($totalStokKeluarMold as $value) {
+                    echo "<td>$value</td>";
+                }
+                foreach ($totalStokKeluarHeating as $value) {
+                    echo "<td>$value</td>";
+                }
+                echo "</tr>";
+
+            } else {
+                echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
+            }
                 // Tutup koneksi
                 mysqli_close($koneksi);
             ?>

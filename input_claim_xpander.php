@@ -40,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
+
 // Tutup koneksi
 $koneksi->close();
 ?>
@@ -137,7 +138,6 @@ $koneksi->close();
         <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" required>
 
         
-		
         <input type="submit" value="Simpan">
     </form>
 </body>
