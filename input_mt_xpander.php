@@ -3,7 +3,8 @@
 include 'koneksi.php';
 
 // Inisialisasi variabel dengan nilai default
-$tanggal = $stokMasuk = $stokKeluar = $sisa = $keterangan = '';
+$tanggal = $shift = $keterangan = '';
+$kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmdkr = $kmdkn= $kmbkr = $kmbkn= $htdp = $htbg = '';
 
 // Inisialisasi pesan untuk informasi hasil penyimpanan
 $pesan = '';
@@ -12,25 +13,34 @@ $pesan = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil data dari formulir jika tersedia
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
-    $stokMasuk = isset($_POST['stok_masuk']) ? $_POST['stok_masuk'] : '';
-    $stokKeluar = isset($_POST['stok_keluar']) ? $_POST['stok_keluar'] : '';
-    $sisa = isset($_POST['sisa']) ? $_POST['sisa'] : '';
     $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
+    $shift = isset($_POST['shift']) ? $_POST['shift'] : '';
+	$kdp = isset($_POST['kdp']) ? $_POST['kdp'] : '';
+    $kbg = isset($_POST['kbg']) ? $_POST['kbg'] : '';
+    $kpkr = isset($_POST['kpkr']) ? $_POST['kpkr'] : '';
+    $kpkn = isset($_POST['kpkn']) ? $_POST['kpkn'] : '';
+    $kskr = isset($_POST['kskr']) ? $_POST['kskr'] : '';
+    $kskn = isset($_POST['kskn']) ? $_POST['kskn'] : '';
+    $kmdkr = isset($_POST['kmdkr']) ? $_POST['kmdkr'] : '';
+    $kmdkn = isset($_POST['kmdkn']) ? $_POST['kmdkn'] : ''; 
+	$kmbkr = isset($_POST['kmbkr']) ? $_POST['kmbkr'] : '';
+    $kmbkn = isset($_POST['kmbkn']) ? $_POST['kmbkn'] : ''; 
+	$htdp = isset($_POST['htdp']) ? $_POST['htdp'] : '';
+    $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
 
-    // Query untuk menyimpan data ke dalam tabel ht_xpander
-    $sql = "INSERT INTO mt_xpander (tanggal, stok_masuk, stok_keluar, sisa, keterangan)
-            VALUES ('$tanggal', '$stokMasuk', '$stokKeluar', '$sisa', '$keterangan')";
+    // Query untuk menyimpan data ke dalam tabel mt_xforce
+    $sql = "INSERT INTO mt_xpander (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn, htdp, htbg)
+            VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn', '$htdp', '$htbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        // Arahkan ke halaman stok_ht_xpander.php setelah berhasil disimpan
+        // Arahkan ke halaman stok_mt_xforce.php setelah berhasil disimpan
         header("Location: stok_mt_xpander.php");
         exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
-
 // Tutup koneksi
 $koneksi->close();
 ?>
@@ -40,8 +50,8 @@ $koneksi->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Input Stok HT Xpander</title>
-    <style>
+    <title>Form Input Stok Bahan Mentah Xpander</title>
+     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -57,7 +67,7 @@ $koneksi->close();
             margin-bottom: 8px;
         }
 
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 8px;
             margin-bottom: 12px;
@@ -76,7 +86,6 @@ $koneksi->close();
     </style>
 </head>
 <body>
-
     <h1>Form Input Stok Bahan Mentah Xpander</h1>
 
     <?php echo $pesan; // Tampilkan pesan informasi ?>
@@ -85,20 +94,57 @@ $koneksi->close();
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
 
-        <label for="stok_masuk">Stok Masuk:</label>
-        <input type="number" id="stok_masuk" name="stok_masuk" value="<?php echo $stokMasuk; ?>" required>
-
-        <label for="stok_keluar">Stok Keluar:</label>
-        <input type="number" id="stok_keluar" name="stok_keluar" value="<?php echo $stokKeluar; ?>" required>
-
-        <label for="sisa">Sisa:</label>
-        <input type="number" id="sisa" name="sisa" value="<?php echo $sisa; ?>" required>
+		<label for="shift">Shift:</label>
+        <select id="shift" name="shift" required>
+            <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
+            <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
+        </select>
 
         <label for="keterangan">Keterangan:</label>
-        <textarea id="keterangan" name="keterangan" rows="4" required><?php echo $keterangan; ?></textarea>
+        <select id="keterangan" name="keterangan" required>
+            <option value="Stok Masuk" <?php echo ($keterangan == 'stok_masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
+            <option value="Stok Keluar" <?php echo ($keterangan == 'stok_keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
+        </select>
 
+		<p>Stok Mold</p>
+        <label for="kdp">Kaca Depan:</label>
+        <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" required>
+
+        <label for="kbg">Kaca Bagasi:</label>
+        <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" required>
+
+        <label for="kpkr">Kaca Penumpang Kiri:</label>
+        <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
+
+        <label for="kpkn">Kaca Penumpang Kanan:</label>
+        <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
+
+        <label for="kskr">Kaca Sopir Kiri:</label>
+        <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
+
+        <label for="kskn">Kaca Sopir Kanan:</label>
+        <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
+
+        <label for="kmkr">Kaca Mati Depan Kiri:</label>
+        <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" required>
+
+        <label for="kmkn">Kaca Mati Depan Kanan:</label>
+        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" required> 
+		
+		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
+        <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" required>
+
+        <label for="kmkn">Kaca Mati Belakang Kanan:</label>
+        <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" required>
+
+        <p>Stok Heating</p>
+        <label for="htdp">Kaca Depan:</label>
+        <input type="text" id="htdp" name="htdp" value="<?php echo $htdp; ?>" required>
+
+        <label for="htbg">Kaca Bagasi:</label>
+        <input type="text" id="htbg" name="htbg" value="<?php echo $htbg; ?>" required>
+		
         <input type="submit" value="Simpan">
     </form>
-
 </body>
 </html>

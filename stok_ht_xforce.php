@@ -24,6 +24,7 @@
 
         th {
             background-color: #f2f2f2;
+			text-align: center;	
         }
 		.button-container {
             margin-top: 20px;
@@ -57,13 +58,35 @@
     <table>
         <thead>
             <tr>
-                <th>NO</th>
-				<th>Tanggal</th>
-                <th>Stok Masuk</th>
-                <th>Stok Keluar</th>
-                <th>Sisa</th>
-                <th>Keterangan</th>
+                <th rowspan="6">NO</th>
+				<th rowspan="6">Tanggal</th>
+                <th rowspan="6">Shift</th>
+                <th rowspan="6">Nama</th>
+               
             </tr>
+			
+			<tr>
+				<th colspan="6">Xforce</th>
+                
+			</tr>
+			
+			<tr>
+				<th colspan="2">Terima</th>
+				<th colspan="2">Hasil</th>
+                <th colspan="2">Claim</th>
+			</tr>
+			
+			<tr>
+				<th colspan="1">Depan</th>
+				<th colspan="1">Bagasi</th>
+				<th colspan="1">Depan</th>
+				<th colspan="1">Bagasi</th>
+				<th colspan="1">Depan</th>
+				<th colspan="1">Bagasi</th>
+			</tr>
+			
+			
+			
         </thead>
         <tbody>
             <?php
@@ -72,20 +95,28 @@
                 include 'koneksi.php';
 
                 // Ambil data dari tabel ht_xpander
-                $sql = "SELECT tanggal, stok_masuk, stok_keluar, sisa, keterangan FROM ht_xforce";
+                $sql = "SELECT * FROM ht_xforce";
                 $result = mysqli_query($koneksi, $sql);
 
                 // Tampilkan data dalam tabel HTML
                 if (mysqli_num_rows($result) > 0) {
                     while($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>";
+                         echo "<tr>";
 						echo "<td>" . $no . "</td>";
                         echo "<td>" . $row["tanggal"] . "</td>";
-                        echo "<td>" . $row["stok_masuk"] . "</td>";
-                        echo "<td>" . $row["stok_keluar"] . "</td>";
-                        echo "<td>" . $row["sisa"] . "</td>";
-                        echo "<td>" . $row["keterangan"] . "</td>";
+						echo "<td>" . $row["shift"] . "</td>";
+						echo "<td>" . $row["nama"] . "</td>";
+                        echo "<td>" . $row["tdp"] . "</td>";
+                        echo "<td>" . $row["tbg"] . "</td>";
+                        echo "<td>" . $row["hdp"] . "</td>"; 
+						echo "<td>" . $row["hbg"] . "</td>";
+						echo "<td>" . $row["cdp"] . "</td>";
+                        echo "<td>" . $row["cbg"] . "</td>";
+                      
+						
+                        
                         echo "</tr>";
+						$no++;
                     }
                 } else {
                     echo "<tr><td colspan='5'>Tidak ada data</td></tr>";

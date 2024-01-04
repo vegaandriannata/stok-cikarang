@@ -4,7 +4,7 @@ include 'koneksi.php';
 
 // Inisialisasi variabel dengan nilai default
 $tanggal = $shift = $keterangan = '';
-$kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmkr = $kmkn= $htdp = $htbg = '';
+$kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmdkr = $kmdkn= $kmbkr = $kmbkn=  '';
 
 // Inisialisasi pesan untuk informasi hasil penyimpanan
 $pesan = '';
@@ -21,19 +21,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $kpkn = isset($_POST['kpkn']) ? $_POST['kpkn'] : '';
     $kskr = isset($_POST['kskr']) ? $_POST['kskr'] : '';
     $kskn = isset($_POST['kskn']) ? $_POST['kskn'] : '';
-    $kmkr = isset($_POST['kmkr']) ? $_POST['kmkr'] : '';
-    $kmkn = isset($_POST['kmkn']) ? $_POST['kmkn'] : ''; 
-	$htdp = isset($_POST['htdp']) ? $_POST['htdp'] : '';
-    $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
+    $kmdkr = isset($_POST['kmdkr']) ? $_POST['kmdkr'] : '';
+    $kmdkn = isset($_POST['kmdkn']) ? $_POST['kmdkn'] : ''; 
+	$kmbkr = isset($_POST['kmbkr']) ? $_POST['kmbkr'] : '';
+    $kmbkn = isset($_POST['kmbkn']) ? $_POST['kmbkn'] : ''; 
+	
 
     // Query untuk menyimpan data ke dalam tabel mt_xforce
-    $sql = "INSERT INTO mt_xforce (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmkr, kmkn, htdp, htbg)
-            VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmkr', '$kmkn', '$htdp', '$htbg')";
+    $sql = "INSERT INTO claim_xpander (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn)
+            VALUES ('$tanggal', '$shift', '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
         // Arahkan ke halaman stok_mt_xforce.php setelah berhasil disimpan
-        header("Location: stok_mt_xforce.php");
+        header("Location: stok_claim_xpander.php");
         exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
@@ -48,8 +49,8 @@ $koneksi->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Input Stok Bahan Mentah Xforce</title>
-      <style>
+    <title>Form Input Stok Claim Xpander</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -84,7 +85,7 @@ $koneksi->close();
     </style>
 </head>
 <body>
-    <h1>Form Input Stok Bahan Mentah Xforce</h1>
+    <h1>Form Input Stok Claim Xpander</h1>
 
     <?php echo $pesan; // Tampilkan pesan informasi ?>
 
@@ -123,18 +124,19 @@ $koneksi->close();
         <label for="kskn">Kaca Sopir Kanan:</label>
         <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
 
-        <label for="kmkr">Kaca Mati Kiri:</label>
-        <input type="text" id="kmkr" name="kmkr" value="<?php echo $kmkr; ?>" required>
+        <label for="kmkr">Kaca Mati Depan Kiri:</label>
+        <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" required>
 
-        <label for="kmkn">Kaca Mati Kanan:</label>
-        <input type="text" id="kmkn" name="kmkn" value="<?php echo $kmkn; ?>" required>
+        <label for="kmkn">Kaca Mati Depan Kanan:</label>
+        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" required> 
+		
+		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
+        <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" required>
 
-        <p>Stok Heating</p>
-        <label for="htdp">Kaca Depan:</label>
-        <input type="text" id="htdp" name="htdp" value="<?php echo $htdp; ?>" required>
+        <label for="kmkn">Kaca Mati Belakang Kanan:</label>
+        <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" required>
 
-        <label for="htbg">Kaca Bagasi:</label>
-        <input type="text" id="htbg" name="htbg" value="<?php echo $htbg; ?>" required>
+        
 		
         <input type="submit" value="Simpan">
     </form>

@@ -3,7 +3,7 @@
 include 'koneksi.php';
 
 // Inisialisasi variabel dengan nilai default
-$tanggal = $stokMasuk = $stokKeluar = $sisa = $keterangan = '';
+$tanggal = $shift = $nama = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
 
 // Inisialisasi pesan untuk informasi hasil penyimpanan
 $pesan = '';
@@ -12,18 +12,23 @@ $pesan = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil data dari formulir jika tersedia
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
-    $stokMasuk = isset($_POST['stok_masuk']) ? $_POST['stok_masuk'] : '';
-    $stokKeluar = isset($_POST['stok_keluar']) ? $_POST['stok_keluar'] : '';
-    $sisa = isset($_POST['sisa']) ? $_POST['sisa'] : '';
-    $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
+	$shift = isset($_POST['shift']) ? $_POST['shift'] : '';
+    $nama = isset($_POST['nama']) ? $_POST['nama'] : '';
+    $tdp = isset($_POST['tdp']) ? $_POST['tdp'] : '';
+    $tbg = isset($_POST['tbg']) ? $_POST['tbg'] : '';
+	$hdp = isset($_POST['hdp']) ? $_POST['hdp'] : '';
+    $hbg = isset($_POST['hbg']) ? $_POST['hbg'] : '';
+	$cdp = isset($_POST['cdp']) ? $_POST['cdp'] : '';
+    $cbg = isset($_POST['cbg']) ? $_POST['cbg'] : '';
+    
 
-    // Query untuk menyimpan data ke dalam tabel ht_xpander
-    $sql = "INSERT INTO ht_xforce (tanggal, stok_masuk, stok_keluar, sisa, keterangan)
-            VALUES ('$tanggal', '$stokMasuk', '$stokKeluar', '$sisa', '$keterangan')";
+    // Query untuk menyimpan data ke dalam tabel ht_xforce
+    $sql = "INSERT INTO ht_xforce (tanggal, shift, nama, tdp, tbg, hdp, hbg, cdp, cbg)
+            VALUES ('$tanggal', '$shift', '$nama', '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        // Arahkan ke halaman stok_ht_xpander.php setelah berhasil disimpan
+        // Arahkan ke halaman stok_ht_xforce.php setelah berhasil disimpan
         header("Location: stok_ht_xforce.php");
         exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
     } else {
@@ -57,7 +62,7 @@ $koneksi->close();
             margin-bottom: 8px;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 12px;
@@ -85,17 +90,34 @@ $koneksi->close();
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
 
-        <label for="stok_masuk">Stok Masuk:</label>
-        <input type="number" id="stok_masuk" name="stok_masuk" value="<?php echo $stokMasuk; ?>" required>
+        <label for="shift">Shift:</label>
+    <select id="shift" name="shift" required>
+        <option value="Pagi" <?php if ($shift == "Pagi") echo "selected"; ?>>Pagi</option>
+        <option value="Malam" <?php if ($shift == "Malam") echo "selected"; ?>>Malam</option>
+    </select>
 
-        <label for="stok_keluar">Stok Keluar:</label>
-        <input type="number" id="stok_keluar" name="stok_keluar" value="<?php echo $stokKeluar; ?>" required>
+        <label for="nama">nama:</label>
+        <input type="text" id="nama" name="nama" value="<?php echo $nama; ?>" required>
 
-        <label for="sisa">Sisa:</label>
-        <input type="number" id="sisa" name="sisa" value="<?php echo $sisa; ?>" required>
+        <label for="tdp">Terima Depan:</label>
+        <input type="number" id="tdp" name="tdp" value="<?php echo $tdp; ?>" required>
+		
+        <label for="tbg">Terima Bagasi:</label>
+        <input type="number" id="tbg" name="tbg" value="<?php echo $tbg; ?>" required>
 
-        <label for="keterangan">Keterangan:</label>
-        <textarea id="keterangan" name="keterangan" rows="4" required><?php echo $keterangan; ?></textarea>
+        <label for="hdp">Hasil Depan:</label>
+        <input type="number" id="hdp" name="hdp" value="<?php echo $hdp; ?>" required>
+		
+        <label for="hbg">Hasil Bagasi:</label>
+        <input type="number" id="hbg" name="hbg" value="<?php echo $hbg; ?>" required>
+
+        <label for="cdp">Claim Depan:</label>
+        <input type="number" id="cdp" name="cdp" value="<?php echo $cdp; ?>" required>
+		
+        <label for="cbg">Claim Bagasi:</label>
+        <input type="number" id="cbg" name="cbg" value="<?php echo $cbg; ?>" required>
+
+        
 
         <input type="submit" value="Simpan">
     </form>

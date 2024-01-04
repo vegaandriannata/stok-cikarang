@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Stok Heating</title>
+    <title>Dashboard Stok Claim</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,6 +14,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+			font-size:12px;
+			
         }
 
         th, td {
@@ -22,10 +24,10 @@
             text-align: left;
         }
 
-        th {
-            background-color: #f2f2f2;
-			text-align: center;	
-        }
+         th {
+        background-color: #f2f2f2;
+        text-align: center; /* Center-align table headers */
+    }
 		.button-container {
             margin-top: 20px;
         }
@@ -47,44 +49,42 @@
 </head>
 <body>
 
-    <h1>Dashboard Stok Heating Xpander</h1>
+    <h1>Dashboard Stok Claim Xpander</h1>
 	<div class="button-container">
 	<a href="dashboard-stok.php">Dashboard Stok</a>
-        <a href="input_ht_xpander.php">Input Stok HT Xpander</a>
-		
+    <a href="input_claim_xpander.php">Input Stok Claim Xpander</a>
+	
+	
     </div>
 	
 	
     <table>
         <thead>
             <tr>
-                <th rowspan="6">NO</th>
-				<th rowspan="6">Tanggal</th>
-                <th rowspan="6">Shift</th>
-                <th rowspan="6">Nama</th>
-               
+                <th rowspan="2">NO</th>
+				<th rowspan="2">Tanggal</th>
+				<th rowspan="2">Shift</th>
+				<th rowspan="2">Keterangan</th>
+				<th colspan="10">Claim</th>
+				
+				
             </tr>
 			
-			<tr>
-				<th colspan="6">Xpander</th>
-                
-			</tr>
 			
 			<tr>
-				<th colspan="2" >Terima</th>
-				<th colspan="2">Hasil</th>
-                <th colspan="2">Claim</th>
+				<th>Depan</th>
+                <th>Bagasi</th>
+				
+                <th>Sopir Kiri</th>
+				<th>Sopir Kanan</th>
+				<th>Penumpang Kiri</th>
+				<th>Penumpang Kanan</th>
+				<th>Mati Depan Kiri</th>
+				<th>Mati Depan Kanan</th>
+				<th>Mati Belakang Kiri</th>
+				<th>Mati Belakang Kanan</th>
+				
 			</tr>
-			
-			<tr>
-				<th colspan="1">Depan</th>
-				<th colspan="1">Bagasi</th>
-				<th colspan="1">Depan</th>
-				<th colspan="1">Bagasi</th>
-				<th colspan="1">Depan</th>
-				<th colspan="1">Bagasi</th>
-			</tr>
-			
 			
 			
         </thead>
@@ -95,24 +95,27 @@
                 include 'koneksi.php';
 
                 // Ambil data dari tabel ht_xpander
-                $sql = "SELECT * FROM ht_xpander";
+                $sql = "SELECT * FROM claim_xpander";
                 $result = mysqli_query($koneksi, $sql);
 
                 // Tampilkan data dalam tabel HTML
                 if (mysqli_num_rows($result) > 0) {
                     while($row = mysqli_fetch_assoc($result)) {
-                         echo "<tr>";
+                        echo "<tr>";
 						echo "<td>" . $no . "</td>";
                         echo "<td>" . $row["tanggal"] . "</td>";
 						echo "<td>" . $row["shift"] . "</td>";
-						echo "<td>" . $row["nama"] . "</td>";
-                        echo "<td>" . $row["tdp"] . "</td>";
-                        echo "<td>" . $row["tbg"] . "</td>";
-                        echo "<td>" . $row["hdp"] . "</td>"; 
-						echo "<td>" . $row["hbg"] . "</td>";
-						echo "<td>" . $row["cdp"] . "</td>";
-                        echo "<td>" . $row["cbg"] . "</td>";
-                      
+						echo "<td>" . $row["keterangan"] . "</td>";
+                        echo "<td>" . $row["kdp"] . "</td>";
+                        echo "<td>" . $row["kbg"] . "</td>";
+                        echo "<td>" . $row["kpkr"] . "</td>"; 
+						echo "<td>" . $row["kpkn"] . "</td>";
+						echo "<td>" . $row["kskr"] . "</td>";
+                        echo "<td>" . $row["kskn"] . "</td>";
+                        echo "<td>" . $row["kmdkr"] . "</td>"; 
+						echo "<td>" . $row["kmdkn"] . "</td>";
+						echo "<td>" . $row["kmbkr"] . "</td>"; 
+						echo "<td>" . $row["kmbkn"] . "</td>";
 						
                         
                         echo "</tr>";

@@ -4,7 +4,7 @@ include 'koneksi.php';
 
 // Inisialisasi variabel dengan nilai default
 $tanggal = $shift = $keterangan = '';
-$kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmkr = $kmkn= $htdp = $htbg = '';
+$kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmkr = $kmkn=  '';
 
 // Inisialisasi pesan untuk informasi hasil penyimpanan
 $pesan = '';
@@ -23,17 +23,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $kskn = isset($_POST['kskn']) ? $_POST['kskn'] : '';
     $kmkr = isset($_POST['kmkr']) ? $_POST['kmkr'] : '';
     $kmkn = isset($_POST['kmkn']) ? $_POST['kmkn'] : ''; 
-	$htdp = isset($_POST['htdp']) ? $_POST['htdp'] : '';
-    $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
+	
 
     // Query untuk menyimpan data ke dalam tabel mt_xforce
-    $sql = "INSERT INTO mt_xforce (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmkr, kmkn, htdp, htbg)
-            VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmkr', '$kmkn', '$htdp', '$htbg')";
+    $sql = "INSERT INTO claim_xforce (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmkr, kmkn)
+            VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmkr', '$kmkn')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
         // Arahkan ke halaman stok_mt_xforce.php setelah berhasil disimpan
-        header("Location: stok_mt_xforce.php");
+        header("Location: stok_claim_xforce.php");
         exit(); // Penting untuk menghentikan eksekusi script setelah header diarahkan
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
@@ -49,7 +48,7 @@ $koneksi->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Input Stok Bahan Mentah Xforce</title>
-      <style>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -84,7 +83,7 @@ $koneksi->close();
     </style>
 </head>
 <body>
-    <h1>Form Input Stok Bahan Mentah Xforce</h1>
+    <h1>Form Input Stok Claim Xforce</h1>
 
     <?php echo $pesan; // Tampilkan pesan informasi ?>
 
@@ -92,7 +91,7 @@ $koneksi->close();
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
 
-		 <label for="shift">Shift:</label>
+		<label for="shift">Shift:</label>
         <select id="shift" name="shift" required>
             <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
             <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
@@ -129,12 +128,7 @@ $koneksi->close();
         <label for="kmkn">Kaca Mati Kanan:</label>
         <input type="text" id="kmkn" name="kmkn" value="<?php echo $kmkn; ?>" required>
 
-        <p>Stok Heating</p>
-        <label for="htdp">Kaca Depan:</label>
-        <input type="text" id="htdp" name="htdp" value="<?php echo $htdp; ?>" required>
-
-        <label for="htbg">Kaca Bagasi:</label>
-        <input type="text" id="htbg" name="htbg" value="<?php echo $htbg; ?>" required>
+        
 		
         <input type="submit" value="Simpan">
     </form>
