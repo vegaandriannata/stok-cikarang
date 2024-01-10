@@ -58,7 +58,7 @@ $koneksi->close();
         }
 
         form {
-            max-width: 400px;
+            max-width: 100%;
             margin: auto;
         }
 
@@ -96,47 +96,59 @@ $koneksi->close();
 
 		 <label for="shift">Shift:</label>
         <select id="shift" name="shift" required>
-            <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
-            <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
+            <option value="Pagi" <?php echo ($shift == 'Pagi') ? 'selected' : ''; ?>>Pagi</option>
+            <option value="Malam" <?php echo ($shift == 'Malam') ? 'selected' : ''; ?>>Malam</option>
         </select>
 
         <label for="keterangan">Keterangan:</label>
         <select id="keterangan" name="keterangan" required>
-            <option value="Stok Masuk" <?php echo ($keterangan == 'stok_masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
-            <option value="Stok Keluar" <?php echo ($keterangan == 'stok_keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
+            <option value="Stok Masuk" <?php echo ($keterangan == 'Stok Masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
+            <option value="Stok Keluar" <?php echo ($keterangan == 'Stok Keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
         </select>
 
 		<p>Stok Mold</p>
+		<div style="display: flex; flex-wrap: wrap;">
+
+    <!-- Section 1 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kdp">Kaca Depan:</label>
-        <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" required>
+        <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" >
 
         <label for="kbg">Kaca Bagasi:</label>
-        <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" required>
-
+        <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" >
+</div>
+<!-- Section 2 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kpkr">Kaca Penumpang Kiri:</label>
-        <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
+        <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" >
 
         <label for="kpkn">Kaca Penumpang Kanan:</label>
-        <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
-
+        <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" >
+</div>
+<!-- Section 2 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kskr">Kaca Sopir Kiri:</label>
-        <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
+        <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" >
 
         <label for="kskn">Kaca Sopir Kanan:</label>
-        <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
-
+        <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" >
+</div>
+<!-- Section 3 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kmkr">Kaca Mati Depan Kiri:</label>
-        <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" required>
+        <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" >
 
         <label for="kmkn">Kaca Mati Depan Kanan:</label>
-        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" required> 
-		
+        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" > 
+		</div>
+		<!-- Section 4 -->
+    <div style="flex: 0 0 16%; ">
 		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
-        <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" required>
+        <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" >
 
         <label for="kmkn">Kaca Mati Belakang Kanan:</label>
-        <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" required>
-
+        <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" >
+</div>
         
         <input type="submit" value="Simpan">
     </form>

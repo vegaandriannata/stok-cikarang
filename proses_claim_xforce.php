@@ -1,5 +1,5 @@
 <?php
-// proses_claim.php
+
 
 include 'koneksi.php';
 

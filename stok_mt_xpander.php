@@ -14,8 +14,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-			font-size:12px;
-			
+            font-size: 12px;
         }
 
         th, td {
@@ -24,11 +23,12 @@
             text-align: left;
         }
 
-         th {
-        background-color: #f2f2f2;
-        text-align: center; /* Center-align table headers */
-    }
-		.button-container {
+        th {
+            background-color: #f2f2f2;
+            text-align: center; /* Center-align table headers */
+        }
+
+        .button-container {
             margin-top: 20px;
         }
 
@@ -45,18 +45,68 @@
         .button-container a:hover, .button-container button:hover {
             background-color: #45a049;
         }
+
+       .filter-form {
+        display: flex; /* Use flexbox to create a horizontal layout */
+		display: none;
+        align-items: center; /* Align items vertically in the center */
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .filter-form label {
+        flex: 1; /* Distribute available space equally among labels */
+        text-align: right;
+        margin-right: 10px; /* Add some right margin for separation */
+    }
+
+    .filter-form input,
+    .filter-form button {
+        flex: 2; /* Distribute available space equally among inputs and button */
+        padding: 8px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .filter-form button {
+        margin-left: 10px; /* Add some left margin for separation from the input */
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .filter-form button:hover {
+        background-color: #45a049;
+    }
+		
     </style>
+	
 </head>
 <body>
 
-    <h1>Dashboard Stok Bahan Mentah Xpander</h1>
-	<div class="button-container">
-	<a href="dashboard-stok.php">Dashboard Stok</a>
-    <a href="input_mt_xpander.php">Input Stok Bahan Mentah Xpander</a>
-	
-	
+     <h1>Dashboard Stok Bahan Mentah Xpander</h1>
+    <div class="button-container">
+		 <a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
+		<a href="stok_mt_xpander.php">Reset Filter</a>
+        <a href="dashboard-stok.php">Dashboard Stok</a>
+        <a href="input_mt_xpander.php">Input Stok Bahan Mentah Xpander</a>
+		
     </div>
-	
+<div class="form-group">
+    <form method="get" action="" class="filter-form">
+        <label for="filterTanggalStart">Filter Tanggal Mulai:</label>
+        <input type="date" id="filterTanggalStart" name="filterTanggalStart">
+        
+        <label for="filterTanggalEnd">Filter Tanggal Akhir:</label>
+        <input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
+
+        <button type="submit">Filter</button>
+    </form>
+	</div>
 	
     <table>
         <thead>
@@ -107,8 +157,13 @@
                 
                 include 'koneksi.php';
 
-                
+               $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
+    $filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
                 $sql = "SELECT * FROM mt_xpander";
+				
+				 if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
+        $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+    }
                 $result = mysqli_query($koneksi, $sql);
 
                 
@@ -185,6 +240,11 @@
             ?>
         </tbody>
     </table>
-
+<script>
+        function toggleFilterForm() {
+            var filterForm = document.querySelector('.filter-form');
+            filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>

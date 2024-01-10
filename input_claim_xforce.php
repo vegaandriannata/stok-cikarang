@@ -55,7 +55,7 @@ $koneksi->close();
         }
 
         form {
-            max-width: 400px;
+            max-width: 100%;
             margin: auto;
         }
 
@@ -93,41 +93,51 @@ $koneksi->close();
 
 		<label for="shift">Shift:</label>
         <select id="shift" name="shift" required>
-            <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
-            <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
+            <option value="Pagi" <?php echo ($shift == 'Pagi') ? 'selected' : ''; ?>>Pagi</option>
+            <option value="Malam" <?php echo ($shift == 'Malam') ? 'selected' : ''; ?>>Malam</option>
         </select>
 
         <label for="keterangan">Keterangan:</label>
         <select id="keterangan" name="keterangan" required>
-            <option value="Stok Masuk" <?php echo ($keterangan == 'stok_masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
-            <option value="Stok Keluar" <?php echo ($keterangan == 'stok_keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
+            <option value="Stok Masuk" <?php echo ($keterangan == 'Stok Masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
+            <option value="Stok Keluar" <?php echo ($keterangan == 'Stok Keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
         </select>
 
 		<p>Stok Mold</p>
+		<div style="display: flex; flex-wrap: wrap;">
+
+    <!-- Section 1 -->
+    <div style="flex: 0 0 22%; margin-right: 4%;">
         <label for="kdp">Kaca Depan:</label>
         <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" required>
 
         <label for="kbg">Kaca Bagasi:</label>
         <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" required>
-
+</div>
+<!-- Section 2 -->
+    <div style="flex: 0 0 22%; margin-right: 4%;">
         <label for="kpkr">Kaca Penumpang Kiri:</label>
         <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
 
         <label for="kpkn">Kaca Penumpang Kanan:</label>
         <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
-
+</div>
+<!-- Section 3 -->
+    <div style="flex: 0 0 22%; margin-right: 4%;">
         <label for="kskr">Kaca Sopir Kiri:</label>
         <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
 
         <label for="kskn">Kaca Sopir Kanan:</label>
         <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
-
+</div>
+<!-- Section 4 -->
+    <div style="flex: 0 0 22%; ">
         <label for="kmkr">Kaca Mati Kiri:</label>
         <input type="text" id="kmkr" name="kmkr" value="<?php echo $kmkr; ?>" required>
 
         <label for="kmkn">Kaca Mati Kanan:</label>
         <input type="text" id="kmkn" name="kmkn" value="<?php echo $kmkn; ?>" required>
-
+</div>
         
 		
         <input type="submit" value="Simpan">

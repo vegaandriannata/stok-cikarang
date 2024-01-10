@@ -58,7 +58,7 @@ $koneksi->close();
         }
 
         form {
-            max-width: 400px;
+            
             margin: auto;
         }
 
@@ -107,36 +107,53 @@ $koneksi->close();
         </select>
 
 		<p>Stok Mold</p>
+<div style="display: flex; flex-wrap: wrap;">
+
+    <!-- Section 1 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kdp">Kaca Depan:</label>
         <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" required>
 
         <label for="kbg">Kaca Bagasi:</label>
         <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" required>
+    </div>
 
+    <!-- Section 2 -->
+    <div style="flex: 0 0 16%;margin-right: 5%;">
         <label for="kpkr">Kaca Penumpang Kiri:</label>
         <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
 
         <label for="kpkn">Kaca Penumpang Kanan:</label>
         <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
+    </div>
 
+    <!-- Section 3 -->
+    <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kskr">Kaca Sopir Kiri:</label>
         <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
 
         <label for="kskn">Kaca Sopir Kanan:</label>
         <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
+    </div>
 
-        <label for="kmkr">Kaca Mati Depan Kiri:</label>
+    <!-- Section 4 -->
+    <div style="flex: 0 0 16%;margin-right: 5%;">
+        <label for="kmdkr">Kaca Mati Depan Kiri:</label>
         <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" required>
 
-        <label for="kmkn">Kaca Mati Depan Kanan:</label>
-        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" required> 
-		
-		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
+        <label for="kmdkn">Kaca Mati Depan Kanan:</label>
+        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" required>
+    </div>
+
+    <!-- Section 5 -->
+    <div style="flex: 0 0 16%;">
+        <label for="kmbkr">Kaca Mati Belakang Kiri:</label>
         <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" required>
 
-        <label for="kmkn">Kaca Mati Belakang Kanan:</label>
+        <label for="kmbkn">Kaca Mati Belakang Kanan:</label>
         <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" required>
-
+    </div>
+</div>
         <p>Stok Heating</p>
         <label for="htdp">Kaca Depan:</label>
         <input type="text" id="htdp" name="htdp" value="<?php echo $htdp; ?>" required>
