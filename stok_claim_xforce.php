@@ -83,7 +83,7 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
-	table tbody tr:last-child {
+	table tfoot tr:last-child {
             background-color: #212529; /* Green color */
             color: white;
         }
@@ -107,6 +107,12 @@
         <label for="filterTanggalEnd">Tanggal Akhir:</label>
         <input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
 
+<label for="filterShift">Shift:</label>
+    <select id="filterShift" name="filterShift">
+        <option value="">-- All --</option>
+        <option value="Pagi">Pagi</option>
+        <option value="Malam">Malam</option>
+    </select>
 <label for="filterKeterangan">Keterangan:</label>
     <select id="filterKeterangan" name="filterKeterangan">
         <option value="">-- All --</option>
@@ -114,16 +120,25 @@
         <option value="Stok Keluar">Stok Keluar</option>
     </select>
 	
-	<label for="filterShift">Shift:</label>
-    <select id="filterShift" name="filterShift">
-        <option value="">-- All --</option>
-        <option value="Pagi">Pagi</option>
-        <option value="Malam">Malam</option>
-    </select>
+	
 
         <button type="submit">Filter</button>
     </form>
 	</div>
+	<div class="button-container">
+        
+        <label for="showEntriesSelect">Show entries:</label>
+        <select id="showEntriesSelect" onchange="showEntries()">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="500">500</option>
+            <option value="-1">All</option>
+        </select>
+
+    </div>
     <table>
         <thead>
             <tr>
@@ -163,20 +178,23 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
 			$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
 			$filterKeterangan = isset($_GET['filterKeterangan']) ? $_GET['filterKeterangan'] : '';
 			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
-            $sql = "SELECT * FROM claim_xforce";
-			
-			if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
-        $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
-    }
-	if (!empty($filterKeterangan)) {
-						$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
-						$sql .= " keterangan = '$filterKeterangan'";
-					}
-				if (!empty($filterShift)) {
-					$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
-					$sql .= " shift = '$filterShift'";
-				}
-            $result = mysqli_query($koneksi, $sql);
+           $sql = "SELECT * FROM claim_xforce";
+
+if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
+    $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+}
+
+if (!empty($filterKeterangan)) {
+    $sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
+    $sql .= " keterangan = '$filterKeterangan'";
+}
+
+if (!empty($filterShift)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan)) ? " WHERE" : " AND";
+    $sql .= " shift = '$filterShift'";
+}
+
+$result = mysqli_query($koneksi, $sql);
 
             if (mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) {
@@ -210,30 +228,6 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
                 }
 
              
-                echo "<tr>";
-                echo "<td colspan='4'>Total Stok Masuk</td>";
-                foreach ($totalStokMasukClaim as $value) {
-                    echo "<td>$value</td>";
-                }
-                echo "</tr>";
-
-                echo "<tr>";
-                echo "<td colspan='4'>Total Stok Keluar</td>";
-                foreach ($totalStokKeluarClaim as $value) {
-                    echo "<td>$value</td>";
-                }
-                echo "</tr>";
-				echo "<tr>";
-echo "<td colspan='4'>Total Stok Tersedia</td>";
-
-foreach ($totalStokMasukClaim as $key => $value) {
-    $totalStokTersediaMold[$key] = $totalStokMasukClaim[$key] - $totalStokKeluarClaim[$key];
-    echo "<td>$totalStokTersediaMold[$key]</td>";
-}
-
-
-
-echo "</tr>";
             } else {
                 echo "<tr><td colspan='12'>Tidak ada data</td></tr>";
             }
@@ -241,6 +235,37 @@ echo "</tr>";
             mysqli_close($koneksi);
             ?>
         </tbody>
+		<tfoot>
+            <tr>
+                <td colspan='4'>Total Stok Masuk</td>
+                <?php
+                foreach ($totalStokMasukClaim as $value) {
+                    echo "<td>$value</td>";
+                }
+               
+                ?>
+            </tr>
+            <tr>
+                <td colspan='4'>Total Stok Keluar</td>
+                <?php
+                foreach ($totalStokKeluarClaim as $value) {
+                    echo "<td>$value</td>";
+                }
+                
+                ?>
+            </tr>
+            <tr>
+                <td colspan='4'>Total Stok Tersedia</td>
+                <?php
+                foreach ($totalStokMasukClaim as $key => $value) {
+                    $totalStokTersediaClaim[$key] = $totalStokMasukClaim[$key] - $totalStokKeluarClaim[$key];
+                    echo "<td>$totalStokTersediaClaim[$key]</td>";
+                }
+
+                
+                ?>
+            </tr>
+        </tfoot>
     </table>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
@@ -253,6 +278,27 @@ echo "</tr>";
         var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
         XLSX.writeFile(wb, 'stok_claim_xforce.xlsx');
     }
+	function showEntries() {
+            var table = document.querySelector('table');
+            var select = document.getElementById('showEntriesSelect');
+            var selectedValue = parseInt(select.value);
+
+            // Show all rows
+            var rows = table.querySelectorAll('tbody tr');
+            rows.forEach(function (row) {
+                row.style.display = '';
+            });
+
+            // Hide rows based on selected value
+            if (selectedValue !== -1) {
+                for (var i = selectedValue; i < rows.length; i++) {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+		 document.addEventListener("DOMContentLoaded", function() {
+        showEntries(10);
+    });
     </script>
 </body>
 </html>

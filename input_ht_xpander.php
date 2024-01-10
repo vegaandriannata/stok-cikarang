@@ -1,13 +1,8 @@
 <?php
 
 include 'koneksi.php';
-
-
 $tanggal = $shift = $nama = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
-
-
 $pesan = '';
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -20,8 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hbg = isset($_POST['hbg']) ? $_POST['hbg'] : '';
 	$cdp = isset($_POST['cdp']) ? $_POST['cdp'] : '';
     $cbg = isset($_POST['cbg']) ? $_POST['cbg'] : '';
-    
-
     
     $sql = "INSERT INTO ht_xpander (tanggal, shift, nama, tdp, tbg, hdp, hbg, cdp, cbg)
             VALUES ('$tanggal', '$shift', '$nama', '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
@@ -97,25 +90,25 @@ $koneksi->close();
     </select>
 
         <label for="nama">Nama:</label>
-        <input type="text" id="nama" name="nama" value="<?php echo $nama; ?>" required>
+        <input type="text" id="nama" name="nama" value="<?php echo $nama; ?>" >
 
         <label for="tdp">Terima Depan:</label>
-        <input type="number" id="tdp" name="tdp" value="<?php echo $tdp; ?>" required>
+        <input type="number" id="tdp" name="tdp" value="<?php echo $tdp; ?>" >
 		
         <label for="tbg">Terima Bagasi:</label>
-        <input type="number" id="tbg" name="tbg" value="<?php echo $tbg; ?>" required>
+        <input type="number" id="tbg" name="tbg" value="<?php echo $tbg; ?>" >
 
         <label for="hdp">Hasil Depan:</label>
-        <input type="number" id="hdp" name="hdp" value="<?php echo $hdp; ?>" required>
+        <input type="number" id="hdp" name="hdp" value="<?php echo $hdp; ?>" >
 		
         <label for="hbg">Hasil Bagasi:</label>
-        <input type="number" id="hbg" name="hbg" value="<?php echo $hbg; ?>" required>
+        <input type="number" id="hbg" name="hbg" value="<?php echo $hbg; ?>" >
 
         <label for="cdp">Claim Depan:</label>
-        <input type="number" id="cdp" name="cdp" value="<?php echo $cdp; ?>" required>
+        <input type="number" id="cdp" name="cdp" value="<?php echo $cdp; ?>" >
 		
         <label for="cbg">Claim Bagasi:</label>
-        <input type="number" id="cbg" name="cbg" value="<?php echo $cbg; ?>" required>
+        <input type="number" id="cbg" name="cbg" value="<?php echo $cbg; ?>" >
 
         
 

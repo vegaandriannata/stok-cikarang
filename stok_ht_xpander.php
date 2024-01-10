@@ -83,7 +83,7 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
-	table tbody tr:last-child {
+	table tfoot tr:last-child {
             background-color: #212529; /* Green color */
             color: white;
         }
@@ -119,6 +119,21 @@
 			<button type="submit">Filter</button>
 		</form>
 	</div>
+	
+	<div class="button-container">
+        
+        <label for="showEntriesSelect">Show entries:</label>
+        <select id="showEntriesSelect" onchange="showEntries()">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="500">500</option>
+            <option value="-1">All</option>
+        </select>
+
+    </div>
 	
     <table>
         <thead>
@@ -200,17 +215,7 @@
                     $no++;
                 }
 
-                echo "<tr>";
-                echo "<td colspan='4' >Total Stok Akhir</td>";
-                echo "<td>$totalTerimaDepan</td>";
-                echo "<td>$totalTerimaBagasi</td>";
                 
-                echo "<td>$totalHasilDepan</td>";
-                echo "<td>$totalHasilBagasi</td>";
-               
-                echo "<td>$totalClaimDepan</td>";
-                echo "<td>$totalClaimBagasi</td>";
-                echo "</tr>";
             } else {
                 echo "<tr><td colspan='5'>Tidak ada data</td></tr>";
             }
@@ -218,6 +223,17 @@
             mysqli_close($koneksi);
             ?>
         </tbody>
+		<tfoot>
+            <tr>
+                <td colspan='4'>Total Stok Akhir</td>
+                <td><?php echo $totalTerimaDepan; ?></td>
+                <td><?php echo $totalTerimaBagasi; ?></td>
+                <td><?php echo $totalHasilDepan; ?></td>
+                <td><?php echo $totalHasilBagasi; ?></td>
+                <td><?php echo $totalClaimDepan; ?></td>
+                <td><?php echo $totalClaimBagasi; ?></td>
+            </tr>
+        </tfoot>
     </table>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 	<script>
@@ -230,6 +246,27 @@
         var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
         XLSX.writeFile(wb, 'stok_ht_xforce.xlsx');
 		}
+		function showEntries() {
+            var table = document.querySelector('table');
+            var select = document.getElementById('showEntriesSelect');
+            var selectedValue = parseInt(select.value);
+
+            // Show all rows
+            var rows = table.querySelectorAll('tbody tr');
+            rows.forEach(function (row) {
+                row.style.display = '';
+            });
+
+            // Hide rows based on selected value
+            if (selectedValue !== -1) {
+                for (var i = selectedValue; i < rows.length; i++) {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+		 document.addEventListener("DOMContentLoaded", function() {
+        showEntries(10);
+    });
     </script>
 </body>
 </html>
