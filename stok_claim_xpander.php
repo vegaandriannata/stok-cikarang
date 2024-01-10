@@ -81,6 +81,10 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
+	table tbody tr:last-child {
+            background-color: #212529; /* Green color */
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -91,6 +95,7 @@
 		<a href="stok_claim_xpander.php">Reset Filter</a>
         <a href="dashboard-stok.php">Dashboard Stok</a>
         <a href="input_claim_xpander.php">Input Stok Claim Xpander</a>
+		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
 <div class="form-group">
     <form method="get" action="" class="filter-form">
@@ -199,6 +204,17 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
                     echo "<td>$value</td>";
                 }
                 echo "</tr>";
+				echo "<tr>";
+echo "<td colspan='4'>Total Stok Tersedia</td>";
+
+foreach ($totalStokMasukClaim as $key => $value) {
+    $totalStokTersediaMold[$key] = $totalStokMasukClaim[$key] - $totalStokKeluarClaim[$key];
+    echo "<td>$totalStokTersediaMold[$key]</td>";
+}
+
+
+
+echo "</tr>";
             } else {
                 echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
             }
@@ -207,11 +223,18 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
             ?>
         </tbody>
     </table>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
         function toggleFilterForm() {
             var filterForm = document.querySelector('.filter-form');
             filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
         }
+		function exportToExcel() {
+        var table = document.querySelector('table');
+        var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'stok_claim_xpander.xlsx');
+    }
     </script>
+
 </body>
 </html>

@@ -82,6 +82,10 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
+	table tbody tr:last-child {
+            background-color: #212529; /* Green color */
+            color: white;
+        }
 		
     </style>
 	
@@ -90,13 +94,14 @@
 
      <h1>Dashboard Stok Bahan Mentah Xpander</h1>
     <div class="button-container">
-		 <a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
+		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_mt_xpander.php">Reset Filter</a>
         <a href="dashboard-stok.php">Dashboard Stok</a>
         <a href="input_mt_xpander.php">Input Stok Bahan Mentah Xpander</a>
-		
+		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
-<div class="form-group">
+	
+	<div class="form-group">
     <form method="get" action="" class="filter-form">
         <label for="filterTanggalStart">Filter Tanggal Mulai:</label>
         <input type="date" id="filterTanggalStart" name="filterTanggalStart">
@@ -157,8 +162,8 @@
                 
                 include 'koneksi.php';
 
-               $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
-    $filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
+				$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
+				$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
                 $sql = "SELECT * FROM mt_xpander";
 				
 				 if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
@@ -231,6 +236,20 @@
                     echo "<td>$value</td>";
                 }
                 echo "</tr>";
+				echo "<tr>";
+echo "<td colspan='4'>Total Stok Tersedia</td>";
+
+foreach ($totalStokMasukMold as $key => $value) {
+    $totalStokTersediaMold[$key] = $totalStokMasukMold[$key] - $totalStokKeluarMold[$key];
+    echo "<td>$totalStokTersediaMold[$key]</td>";
+}
+
+foreach ($totalStokMasukHeating as $key => $value) {
+    $totalStokTersediaHeating[$key] = $totalStokMasukHeating[$key] - $totalStokKeluarHeating[$key];
+    echo "<td>$totalStokTersediaHeating[$key]</td>";
+}
+
+echo "</tr>";
 
             } else {
                 echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
@@ -240,11 +259,17 @@
             ?>
         </tbody>
     </table>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
         function toggleFilterForm() {
             var filterForm = document.querySelector('.filter-form');
             filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
         }
+		function exportToExcel() {
+        var table = document.querySelector('table');
+        var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'stok_mt_xpander.xlsx');
+    }
     </script>
 </body>
 </html>

@@ -82,6 +82,10 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
+	table tbody tr:last-child {
+            background-color: #212529; /* Green color */
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +96,7 @@
 		<a href="stok_mt_xforce.php">Reset Filter</a>
         <a href="dashboard-stok.php">Dashboard Stok</a>
         <a href="input_mt_xforce.php">Input Stok Bahan Mentah Xforce</a>
+		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
 	
 <div class="form-group">
@@ -216,6 +221,20 @@
                     echo "<td>$value</td>";
                 }
                 echo "</tr>";
+				echo "<tr>";
+echo "<td colspan='4'>Total Stok Tersedia</td>";
+
+foreach ($totalStokMasukMold as $key => $value) {
+    $totalStokTersediaMold[$key] = $totalStokMasukMold[$key] - $totalStokKeluarMold[$key];
+    echo "<td>$totalStokTersediaMold[$key]</td>";
+}
+
+foreach ($totalStokMasukHeating as $key => $value) {
+    $totalStokTersediaHeating[$key] = $totalStokMasukHeating[$key] - $totalStokKeluarHeating[$key];
+    echo "<td>$totalStokTersediaHeating[$key]</td>";
+}
+
+echo "</tr>";
             } else {
                 echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
             }
@@ -224,11 +243,17 @@
             ?>
         </tbody>
     </table>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
         function toggleFilterForm() {
             var filterForm = document.querySelector('.filter-form');
             filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
         }
+		function exportToExcel() {
+        var table = document.querySelector('table');
+        var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'stok_mt_xforce.xlsx');
+    }
     </script>
 </body>
 </html>

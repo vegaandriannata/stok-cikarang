@@ -79,6 +79,10 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
+	table tbody tr:last-child {
+            background-color: #212529; /* Green color */
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -87,10 +91,9 @@
 	<div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_ht_xforce.php">Reset Filter</a>
-	<a href="dashboard-stok.php">Dashboard Stok</a>
-	
+		<a href="dashboard-stok.php">Dashboard Stok</a>
         <a href="input_ht_xforce.php">Input Stok HT Xforce</a>
-		
+		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
 	<div class="form-group">
     <form method="get" action="" class="filter-form">
@@ -107,14 +110,10 @@
     <table>
         <thead>
             <tr>
-                <th rowspan="6">NO</th>
-				<th rowspan="6">Tanggal</th>
-                <th rowspan="6">Shift</th>
-                <th rowspan="6">Nama</th>
-               
-            </tr>
-			
-			<tr>
+                <th rowspan="3">NO</th>
+				<th rowspan="3">Tanggal</th>
+                <th rowspan="3">Shift</th>
+                <th rowspan="3">Nama</th>
 				<th colspan="6">Xforce</th>
                 
 			</tr>
@@ -207,11 +206,17 @@
             ?>
         </tbody>
     </table>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
         function toggleFilterForm() {
             var filterForm = document.querySelector('.filter-form');
             filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
         }
+		function exportToExcel() {
+        var table = document.querySelector('table');
+        var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'stok_ht_xforce.xlsx');
+    }
     </script>
 </body>
 </html>
