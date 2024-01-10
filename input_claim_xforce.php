@@ -117,26 +117,26 @@ $koneksi->close();
 <!-- Section 2 -->
     <div style="flex: 0 0 22%; margin-right: 4%;">
         <label for="kpkr">Kaca Penumpang Kiri:</label>
-        <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
+        <input type="number" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" required>
 
         <label for="kpkn">Kaca Penumpang Kanan:</label>
-        <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
+        <input type="number" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" required>
 </div>
 <!-- Section 3 -->
     <div style="flex: 0 0 22%; margin-right: 4%;">
         <label for="kskr">Kaca Sopir Kiri:</label>
-        <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
+        <input type="number" id="kskr" name="kskr" value="<?php echo $kskr; ?>" required>
 
         <label for="kskn">Kaca Sopir Kanan:</label>
-        <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
+        <input type="number" id="kskn" name="kskn" value="<?php echo $kskn; ?>" required>
 </div>
 <!-- Section 4 -->
     <div style="flex: 0 0 22%; ">
         <label for="kmkr">Kaca Mati Kiri:</label>
-        <input type="text" id="kmkr" name="kmkr" value="<?php echo $kmkr; ?>" required>
+        <input type="number" id="kmkr" name="kmkr" value="<?php echo $kmkr; ?>" required>
 
         <label for="kmkn">Kaca Mati Kanan:</label>
-        <input type="text" id="kmkn" name="kmkn" value="<?php echo $kmkn; ?>" required>
+        <input type="number" id="kmkn" name="kmkn" value="<?php echo $kmkn; ?>" required>
 </div>
         
 		

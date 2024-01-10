@@ -24,9 +24,10 @@
 
         th {
             background-color: #f2f2f2;
-            text-align: center;	
+            text-align: center; /* Center-align table headers */
         }
-		.button-container {
+
+        .button-container {
             margin-top: 20px;
         }
 
@@ -43,7 +44,9 @@
         .button-container a:hover, .button-container button:hover {
             background-color: #45a049;
         }
-		.filter-form {
+		
+		
+		 .filter-form {
         display: flex; /* Use flexbox to create a horizontal layout */
 		display: none;
         align-items: center; /* Align items vertically in the center */
@@ -60,6 +63,7 @@
     }
 
     .filter-form input,
+	.filter-form select,
     .filter-form button {
         flex: 2; /* Distribute available space equally among inputs and button */
         padding: 8px;
@@ -79,7 +83,6 @@
     .filter-form button:hover {
         background-color: #45a049;
     }
-	
 	table tbody tr:last-child {
             background-color: #212529; /* Green color */
             color: white;
@@ -89,24 +92,32 @@
 <body>
 
     <h1>Dashboard Stok Heating Mingguan Xpander</h1>
+	
 	<div class="button-container">
-	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
-		<a href="stok_ht_xpander.php">Reset Filter</a>
-	<a href="dashboard-stok.php">Dashboard Stok</a>
-    <a href="input_ht_xpander.php">Input Stok HT Xpander</a>
-	<button onclick="exportToExcel()">Export to Excel</button>
-		
+		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
+		<a href="stok_ht_xpander.php"style="margin-right:1%;">Reset Filter</a>
+		<a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
+		<a href="input_ht_xpander.php"style="margin-right:1%;">Input Stok </a>
+		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
+	
 	<div class="form-group">
-    <form method="get" action="" class="filter-form">
-        <label for="filterTanggalStart">Filter Tanggal Mulai:</label>
-        <input type="date" id="filterTanggalStart" name="filterTanggalStart">
-        
-        <label for="filterTanggalEnd">Filter Tanggal Akhir:</label>
-        <input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
+		<form method="get" action="" class="filter-form">
+			<label for="filterTanggalStart" >Tanggal Mulai:</label>
+			<input type="date" id="filterTanggalStart" name="filterTanggalStart">
+			
+			<label for="filterTanggalEnd">Tanggal Akhir:</label>
+			<input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
 
-        <button type="submit">Filter</button>
-    </form>
+			<label for="filterShift">Shift:</label>
+			<select id="filterShift" name="filterShift">
+				<option value="">-- All --</option>
+				<option value="Pagi">Pagi</option>
+				<option value="Malam">Malam</option>
+			</select>
+
+			<button type="submit">Filter</button>
+		</form>
 	</div>
 	
     <table>
@@ -140,8 +151,6 @@
 			$no = 1;
             include 'koneksi.php';
 
-            
-			
             $totalTerimaDepan = 0;
             $totalTerimaBagasi = 0;
             $totalHasilDepan = 0;
@@ -150,12 +159,19 @@
             $totalClaimBagasi = 0;
 
 
-$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
+			$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
 			$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
+			
+			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
             $sql = "SELECT * FROM ht_xpander";
 			if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
-        $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
-    }
+				$sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+			}
+	
+			if (!empty($filterShift)) {
+				$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
+				$sql .= " shift = '$filterShift'";
+			}
             $result = mysqli_query($koneksi, $sql);
 
             if (mysqli_num_rows($result) > 0) {
@@ -173,7 +189,6 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
                     echo "<td>" . $row["cbg"] . "</td>";
 
                     
-					
                     $totalTerimaDepan += $row["tdp"];
                     $totalTerimaBagasi += $row["tbg"];
                     $totalHasilDepan += $row["hdp"];
@@ -185,8 +200,6 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
                     $no++;
                 }
 
-                
-				
                 echo "<tr>";
                 echo "<td colspan='4' >Total Stok Akhir</td>";
                 echo "<td>$totalTerimaDepan</td>";
@@ -207,7 +220,7 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
         </tbody>
     </table>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-<script>
+	<script>
         function toggleFilterForm() {
             var filterForm = document.querySelector('.filter-form');
             filterForm.style.display = (filterForm.style.display === 'none' || filterForm.style.display === '') ? 'block' : 'none';
@@ -216,7 +229,7 @@ $filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalS
         var table = document.querySelector('table');
         var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
         XLSX.writeFile(wb, 'stok_ht_xforce.xlsx');
-    }
+		}
     </script>
 </body>
 </html>

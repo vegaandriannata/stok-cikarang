@@ -112,42 +112,42 @@ $koneksi->close();
     <!-- Section 1 -->
     <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kdp">Kaca Depan:</label>
-        <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" >
+        <input type="number" id="kdp" name="kdp" value="<?php echo $kdp; ?>" >
 
         <label for="kbg">Kaca Bagasi:</label>
-        <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" >
+        <input type="number" id="kbg" name="kbg" value="<?php echo $kbg; ?>" >
 </div>
 <!-- Section 2 -->
     <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kpkr">Kaca Penumpang Kiri:</label>
-        <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" >
+        <input type="number" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" >
 
         <label for="kpkn">Kaca Penumpang Kanan:</label>
-        <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" >
+        <input type="number" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" >
 </div>
 <!-- Section 2 -->
     <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kskr">Kaca Sopir Kiri:</label>
-        <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" >
+        <input type="number" id="kskr" name="kskr" value="<?php echo $kskr; ?>" >
 
         <label for="kskn">Kaca Sopir Kanan:</label>
-        <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" >
+        <input type="number" id="kskn" name="kskn" value="<?php echo $kskn; ?>" >
 </div>
 <!-- Section 3 -->
     <div style="flex: 0 0 16%; margin-right: 5%;">
         <label for="kmkr">Kaca Mati Depan Kiri:</label>
-        <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" >
+        <input type="number" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" >
 
         <label for="kmkn">Kaca Mati Depan Kanan:</label>
-        <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" > 
+        <input type="number" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" > 
 		</div>
 		<!-- Section 4 -->
     <div style="flex: 0 0 16%; ">
 		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
-        <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" >
+        <input type="number" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" >
 
         <label for="kmkn">Kaca Mati Belakang Kanan:</label>
-        <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" >
+        <input type="number" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" >
 </div>
         
         <input type="submit" value="Simpan">

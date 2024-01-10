@@ -96,7 +96,7 @@ $koneksi->close();
         <option value="Malam" <?php if ($shift == "Malam") echo "selected"; ?>>Malam</option>
     </select>
 
-        <label for="nama">nama:</label>
+        <label for="nama">Nama:</label>
         <input type="text" id="nama" name="nama" value="<?php echo $nama; ?>" required>
 
         <label for="tdp">Terima Depan:</label>

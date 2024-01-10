@@ -24,9 +24,10 @@
 
         th {
             background-color: #f2f2f2;
-			text-align: center;	
+            text-align: center; /* Center-align table headers */
         }
-		.button-container {
+
+        .button-container {
             margin-top: 20px;
         }
 
@@ -43,7 +44,9 @@
         .button-container a:hover, .button-container button:hover {
             background-color: #45a049;
         }
-		.filter-form {
+		
+		
+		 .filter-form {
         display: flex; /* Use flexbox to create a horizontal layout */
 		display: none;
         align-items: center; /* Align items vertically in the center */
@@ -60,6 +63,7 @@
     }
 
     .filter-form input,
+	.filter-form select,
     .filter-form button {
         flex: 2; /* Distribute available space equally among inputs and button */
         padding: 8px;
@@ -90,18 +94,27 @@
     <h1>Dashboard Stok Heating Mingguan Xforce</h1>
 	<div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
-		<a href="stok_ht_xforce.php">Reset Filter</a>
-		<a href="dashboard-stok.php">Dashboard Stok</a>
-        <a href="input_ht_xforce.php">Input Stok HT Xforce</a>
+		<a href="stok_ht_xforce.php"style="margin-right:1%;">Reset Filter</a>
+		<a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
+        <a href="input_ht_xforce.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
     </div>
 	<div class="form-group">
     <form method="get" action="" class="filter-form">
-        <label for="filterTanggalStart">Filter Tanggal Mulai:</label>
+        <label for="filterTanggalStart">Tanggal Mulai:</label>
         <input type="date" id="filterTanggalStart" name="filterTanggalStart">
         
-        <label for="filterTanggalEnd">Filter Tanggal Akhir:</label>
+        <label for="filterTanggalEnd">Tanggal Akhir:</label>
         <input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
+
+
+	
+	<label for="filterShift">Shift:</label>
+    <select id="filterShift" name="filterShift">
+        <option value="">-- All --</option>
+        <option value="Pagi">Pagi</option>
+        <option value="Malam">Malam</option>
+    </select>
 
         <button type="submit">Filter</button>
     </form>
@@ -153,10 +166,15 @@
 			
 			$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
 			$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
+			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
                 $sql = "SELECT * FROM ht_xforce";
 				if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
         $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
     }
+	if (!empty($filterShift)) {
+					$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
+					$sql .= " shift = '$filterShift'";
+				}
                 $result = mysqli_query($koneksi, $sql);
 
                 
