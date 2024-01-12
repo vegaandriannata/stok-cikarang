@@ -1,20 +1,40 @@
 <?php
-
+session_start();
 include 'koneksi.php';
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
 
-
-$tanggal = $shift = $keterangan = '';
+$tanggal = $shift = $line = $keterangan = $status = $no_rangka = '';
 $kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmdkr = $kmdkn= $kmbkr = $kmbkn=  '';
+$alasan_kdp = $alasan_kbg = $alasan_kpkr = $alasan_kpkn = $alasan_kskr = $alasan_kskn = $alasan_kmdkr = $alasan_kmdkn= $alasan_kmbkr = $alasan_kmbkn=  '';
 
 
 $pesan = '';
+
+$teknisi_options = ''; // Variable to store technician options
+
+// Fetch technician names from the database
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi";
+$result_teknisi = $koneksi->query($sql_teknisi);
+
+if ($result_teknisi->num_rows > 0) {
+    while ($row_teknisi = $result_teknisi->fetch_assoc()) {
+        $teknisi_name = $row_teknisi['nama_teknisi'];
+        $teknisi_options .= "<option value='$teknisi_name'>$teknisi_name</option>";
+    }
+}
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
-    $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
+    $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';$keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
+	$status = isset($_POST['status']) ? $_POST['status'] : '';
+	$no_rangka = isset($_POST['no_rangka']) ? $_POST['no_rangka'] : '';
     $shift = isset($_POST['shift']) ? $_POST['shift'] : '';
+	$line = isset($_POST['line']) ? $_POST['line'] : '';
 	$kdp = isset($_POST['kdp']) ? $_POST['kdp'] : '';
     $kbg = isset($_POST['kbg']) ? $_POST['kbg'] : '';
     $kpkr = isset($_POST['kpkr']) ? $_POST['kpkr'] : '';
@@ -26,10 +46,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$kmbkr = isset($_POST['kmbkr']) ? $_POST['kmbkr'] : '';
     $kmbkn = isset($_POST['kmbkn']) ? $_POST['kmbkn'] : ''; 
 	
+	$alasan_kdp = isset($_POST['alasan_kdp']) ? $_POST['alasan_kdp'] : '';
+	$alasan_kbg = isset($_POST['alasan_kbg']) ? $_POST['alasan_kbg'] : '';
+	$alasan_kpkr = isset($_POST['alasan_kpkr']) ? $_POST['alasan_kpkr'] : '';
+	$alasan_kpkn = isset($_POST['alasan_kpkn']) ? $_POST['alasan_kpkn'] : '';
+	$alasan_kskr = isset($_POST['alasan_kskr']) ? $_POST['alasan_kskr'] : '';
+	$alasan_kskn = isset($_POST['alasan_kskn']) ? $_POST['alasan_kskn'] : '';
+	$alasan_kmdkr = isset($_POST['alasan_kmdkr']) ? $_POST['alasan_kmdkr'] : '';
+	$alasan_kmdkn = isset($_POST['alasan_kmdkn']) ? $_POST['alasan_kmdkn'] : '';
+	$alasan_kmbkr = isset($_POST['alasan_kmbkr']) ? $_POST['alasan_kmbkr'] : '';
+	$alasan_kmbkn = isset($_POST['alasan_kmbkn']) ? $_POST['alasan_kmbkn'] : '';
 
-    
-    $sql = "INSERT INTO claim_xpander (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn)
-            VALUES ('$tanggal', '$shift', '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn')";
+
+    $nama_teknisi = isset($_POST['nama_teknisi']) ? $_POST['nama_teknisi'] : '';
+
+    $sql = "INSERT INTO claim_xpander 
+        (tanggal, shift, line, keterangan, nama_teknisi, status, no_rangka, 
+         kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn, kmbkr, kmbkn,
+         alasan_kdp, alasan_kbg, alasan_kpkr, alasan_kpkn, alasan_kskr, 
+         alasan_kskn, alasan_kmdkr, alasan_kmdkn, alasan_kmbkr, alasan_kmbkn)
+        VALUES 
+        ('$tanggal', '$shift', '$line', '$keterangan', '$nama_teknisi', '$status', '$no_rangka', 
+         '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn', '$kmbkr', '$kmbkn',
+         '$alasan_kdp', '$alasan_kbg', '$alasan_kpkr', '$alasan_kpkn', '$alasan_kskr', 
+         '$alasan_kskn', '$alasan_kmdkr', '$alasan_kmdkn', '$alasan_kmbkr', '$alasan_kmbkn')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
@@ -105,50 +145,138 @@ $koneksi->close();
             <option value="Stok Masuk" <?php echo ($keterangan == 'Stok Masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
             <option value="Stok Keluar" <?php echo ($keterangan == 'Stok Keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
         </select>
+		
+		<label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="Claim" <?php echo ($status == 'Claim') ? 'selected' : ''; ?>>Claim</option>
+            <option value="Reject" <?php echo ($status == 'Reject') ? 'selected' : ''; ?>>Reject</option>
+        </select>
+
+		<label for="nama_teknisi">Nama Teknisi:</label>
+		<select id="nama_teknisi" name="nama_teknisi" required>
+			<?php echo $teknisi_options; ?>
+		</select>
+		
+		<label for="no_rangka">Nomor Rangka:</label>
+		<input type="text" id="no_rangka" name="no_rangka" value="<?php echo $no_rangka; ?>" required>
+		
+		
+		<label for="line">Line:</label>
+        <select id="line" name="line" required>
+            <option value="1" <?php echo ($line == '1') ? 'selected' : ''; ?>>1</option>
+            <option value="2" <?php echo ($line == '2') ? 'selected' : ''; ?>>2</option>
+			<option value="3" <?php echo ($line == '3') ? 'selected' : ''; ?>>3</option>
+            <option value="4" <?php echo ($line == '4') ? 'selected' : ''; ?>>4</option>
+			<option value="5" <?php echo ($line == '5') ? 'selected' : ''; ?>>5</option>
+            <option value="6" <?php echo ($line == '6') ? 'selected' : ''; ?>>6</option>
+			
+        </select>
 
 		<p>Stok Mold</p>
 		<div style="display: flex; flex-wrap: wrap;">
 
     <!-- Section 1 -->
-    <div style="flex: 0 0 16%; margin-right: 5%;">
-        <label for="kdp">Kaca Depan:</label>
-        <input type="number" id="kdp" name="kdp" value="<?php echo $kdp; ?>" >
+ <!-- Section 1 -->
+<div style="flex: 0 0 16%; margin-right: 5%;">
+    <label for="kdp">Kaca Depan:</label>
+    <input type="text" id="kdp" name="kdp" value="<?php echo $kdp; ?>" >
+    <select id="alasan_kdp" name="alasan_kdp">
+        <option value=""></option>
+		<option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 
-        <label for="kbg">Kaca Bagasi:</label>
-        <input type="number" id="kbg" name="kbg" value="<?php echo $kbg; ?>" >
+    <label for="kbg">Kaca Bagasi:</label>
+    <input type="text" id="kbg" name="kbg" value="<?php echo $kbg; ?>" >
+    <select id="alasan_kbg" name="alasan_kbg">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 </div>
 <!-- Section 2 -->
-    <div style="flex: 0 0 16%; margin-right: 5%;">
-        <label for="kpkr">Kaca Penumpang Kiri:</label>
-        <input type="number" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" >
+<div style="flex: 0 0 16%; margin-right: 5%;">
+    <label for="kpkr">Kaca Penumpang Kiri:</label>
+    <input type="text" id="kpkr" name="kpkr" value="<?php echo $kpkr; ?>" >
+    <select id="alasan_kpkr" name="alasan_kpkr">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 
-        <label for="kpkn">Kaca Penumpang Kanan:</label>
-        <input type="number" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" >
-</div>
-<!-- Section 2 -->
-    <div style="flex: 0 0 16%; margin-right: 5%;">
-        <label for="kskr">Kaca Sopir Kiri:</label>
-        <input type="number" id="kskr" name="kskr" value="<?php echo $kskr; ?>" >
-
-        <label for="kskn">Kaca Sopir Kanan:</label>
-        <input type="number" id="kskn" name="kskn" value="<?php echo $kskn; ?>" >
+    <label for="kpkn">Kaca Penumpang Kanan:</label>
+    <input type="text" id="kpkn" name="kpkn" value="<?php echo $kpkn; ?>" >
+    <select id="alasan_kpkn" name="alasan_kpkn">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 </div>
 <!-- Section 3 -->
-    <div style="flex: 0 0 16%; margin-right: 5%;">
-        <label for="kmkr">Kaca Mati Depan Kiri:</label>
-        <input type="number" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" >
+<div style="flex: 0 0 16%; margin-right: 5%;">
+    <label for="kskr">Kaca Sopir Kiri:</label>
+    <input type="text" id="kskr" name="kskr" value="<?php echo $kskr; ?>" >
+    <select id="alasan_kskr" name="alasan_kskr">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 
-        <label for="kmkn">Kaca Mati Depan Kanan:</label>
-        <input type="number" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" > 
-		</div>
-		<!-- Section 4 -->
-    <div style="flex: 0 0 16%; ">
-		<label for="kmkr">Kaca Mati Belakang Kiri:</label>
-        <input type="number" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" >
-
-        <label for="kmkn">Kaca Mati Belakang Kanan:</label>
-        <input type="number" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" >
+    <label for="kskn">Kaca Sopir Kanan:</label>
+    <input type="text" id="kskn" name="kskn" value="<?php echo $kskn; ?>" >
+    <select id="alasan_kskn" name="alasan_kskn">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
 </div>
+<!-- Section 4 -->
+<div style="flex: 0 0 16%; margin-right: 5%;">
+    <label for="kmdkr">Kaca Mati Depan Kiri:</label>
+    <input type="text" id="kmdkr" name="kmdkr" value="<?php echo $kmdkr; ?>" >
+    <select id="alasan_kmdkr" name="alasan_kmdkr">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
+
+    <label for="kmdkn">Kaca Mati Depan Kanan:</label>
+    <input type="text" id="kmdkn" name="kmdkn" value="<?php echo $kmdkn; ?>" >
+    <select id="alasan_kmdkn" name="alasan_kmdkn">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
+</div>
+<!-- Section 5 -->
+<div style="flex: 0 0 16%; ">
+    <label for="kmbkr">Kaca Mati Belakang Kiri:</label>
+    <input type="text" id="kmbkr" name="kmbkr" value="<?php echo $kmbkr; ?>" >
+    <select id="alasan_kmbkr" name="alasan_kmbkr">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
+
+    <label for="kmbkn">Kaca Mati Belakang Kanan:</label>
+    <input type="text" id="kmbkn" name="kmbkn" value="<?php echo $kmbkn; ?>" >
+    <select id="alasan_kmbkn" name="alasan_kmbkn">
+	 <option value=""></option>
+        <option value="baret">Baret</option>
+        <option value="bintik">Bintik</option>
+        <option value="lecek">Lecek</option>
+    </select>
+</div>
+
         
         <input type="submit" value="Simpan">
     </form>

@@ -1,3 +1,18 @@
+
+<?php
+session_start();
+
+// Check if user is not logged in, redirect to login page
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +53,22 @@
     .menu a:hover {
         background-color: #45a049;
     }
+	.logout {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .logout a {
+        text-decoration: none;
+        padding: 10px;
+        background-color: #f44336;
+        color: white;
+        border-radius: 5px;
+    }
+
+    .logout a:hover {
+        background-color: #d32f2f;
+    }
     </style>
 
 </head>
@@ -52,7 +83,11 @@
 		<a href="stok_claim_xforce.php">Laporan Stok Claim Xforce</a>
 		<a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Laporan Stok Heating Xpander</a>
         <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Laporan Stok Heating Xforce</a>
+        <a href="list_teknisi.php">List Teknisi</a>
+        <a href="register.php">Register Admin</a>
     </div>
-
+<div class="logout">
+        <a href="?logout">Logout</a>
+    </div>
 </body>
 </html>

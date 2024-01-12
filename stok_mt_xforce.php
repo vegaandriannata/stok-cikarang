@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+// Check if user is not logged in, redirect to login page
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +101,18 @@
             background-color: #212529; /* Green color */
             color: white;
         }
+		.button-container a.logout {
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.button-container a.logout:hover {
+    background-color: #d32f2f;
+}
     </style>
 </head>
 <body>
@@ -98,6 +124,7 @@
         <a href="dashboard-stok.php" style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_mt_xforce.php" style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
+		<a href="?logout" class="logout">Logout</a>
     </div>
 	
 <div class="form-group">
@@ -243,10 +270,9 @@
                     $no++;
                 }
 
-               
-            } else {
-                echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
-            }
+				} else {
+					echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
+				}
 
             mysqli_close($koneksi);
             ?>
@@ -307,13 +333,13 @@
             var select = document.getElementById('showEntriesSelect');
             var selectedValue = parseInt(select.value);
 
-            // Show all rows
+           
             var rows = table.querySelectorAll('tbody tr');
             rows.forEach(function (row) {
                 row.style.display = '';
             });
 
-            // Hide rows based on selected value
+            
             if (selectedValue !== -1) {
                 for (var i = selectedValue; i < rows.length; i++) {
                     rows[i].style.display = 'none';

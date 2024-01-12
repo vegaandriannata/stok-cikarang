@@ -1,7 +1,10 @@
 <?php
-
+session_start();
 include 'koneksi.php';
-
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
 
 $tanggal = $shift = $keterangan = '';
 $kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmkr = $kmkn= $htdp = $htbg = '';

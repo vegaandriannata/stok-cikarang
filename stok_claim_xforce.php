@@ -1,12 +1,27 @@
+<?php
+session_start();
+
+// Check if user is not logged in, redirect to login page
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Stok Claim Xforce</title>
+    <title>Dashboard Stok Claim xforce</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+			
             margin: 20px;
         }
 
@@ -17,6 +32,7 @@
         }
 
         th, td {
+		font-size: 12px;
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
@@ -87,37 +103,65 @@
             background-color: #212529; /* Green color */
             color: white;
         }
+		.button-container a.logout {
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.button-container a.logout:hover {
+    background-color: #d32f2f;
+}
     </style>
 </head>
 <body>
 
-    <h1>Dashboard Stok Claim Xforce</h1>
+    <h1>Dashboard Stok Claim xforce</h1>
     <div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_claim_xforce.php"style="margin-right:1%;">Reset Filter</a>
         <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_claim_xforce.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
+		<a href="?logout" class="logout">Logout</a>
     </div>
-<div class="form-group">
+	<div class="form-group">
     <form method="get" action="" class="filter-form">
         <label for="filterTanggalStart">Tanggal Mulai:</label>
         <input type="date" id="filterTanggalStart" name="filterTanggalStart">
         
         <label for="filterTanggalEnd">Tanggal Akhir:</label>
         <input type="date" id="filterTanggalEnd" name="filterTanggalEnd">
-
-<label for="filterShift">Shift:</label>
+	<label for="filterShift">Shift:</label>
     <select id="filterShift" name="filterShift">
         <option value="">-- All --</option>
         <option value="Pagi">Pagi</option>
         <option value="Malam">Malam</option>
     </select>
-<label for="filterKeterangan">Keterangan:</label>
+	<label for="filterKeterangan">Keterangan:</label>
     <select id="filterKeterangan" name="filterKeterangan">
         <option value="">-- All --</option>
         <option value="Stok Masuk">Stok Masuk</option>
         <option value="Stok Keluar">Stok Keluar</option>
+    </select>
+	<label for="filterStatus">Status:</label>
+    <select id="filterStatus" name="filterStatus">
+        <option value="">-- All --</option>
+        <option value="Claim">Claim</option>
+        <option value="Reject">Reject</option>
+    </select>
+	<label for="filterLine">Line:</label>
+    <select id="filterLine" name="filterLine">
+        <option value="">-- All --</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6	</option>
     </select>
 	
 	
@@ -146,9 +190,13 @@
                 <th rowspan="2">Tanggal</th>
                 <th rowspan="2">Shift</th>
                 <th rowspan="2">Keterangan</th>
-                <th colspan="8">Claim</th>
+				<th rowspan="2">Status</th>
+				<th rowspan="2">Line</th>
+				<th rowspan="2">Nama Teknisi</th>
+				<th rowspan="2">No Ranka</th>
+                <th colspan="10">Claim</th>
             </tr>
-            
+
             <tr>
                 <th>Depan</th>
                 <th>Bagasi</th>
@@ -156,8 +204,8 @@
                 <th>Sopir Kanan</th>
                 <th>Penumpang Kiri</th>
                 <th>Penumpang Kanan</th>
-                <th>Mati Kiri</th>
-                <th>Mati Kanan</th>
+                <th>Mati Belakang Kiri</th>
+                <th>Mati Belakang Kanan</th>
             </tr>
         </thead>
         <tbody>
@@ -168,33 +216,48 @@
             
             $totalStokMasukClaim = [
                 'kdp' => 0, 'kbg' => 0, 'kpkr' => 0, 'kpkn' => 0,
-                'kskr' => 0, 'kskn' => 0, 'kmkr' => 0, 'kmkn' => 0
+                'kskr' => 0, 'kskn' => 0, 
+                'kmkr' => 0, 'kmkn' => 0
             ];
+
             $totalStokKeluarClaim = [
                 'kdp' => 0, 'kbg' => 0, 'kpkr' => 0, 'kpkn' => 0,
-                'kskr' => 0, 'kskn' => 0, 'kmkr' => 0, 'kmkn' => 0
+                'kskr' => 0, 'kskn' => 0, 
+                'kmkr' => 0, 'kmkn' => 0
             ];
-$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
+			$filterTanggalStart = isset($_GET['filterTanggalStart']) ? $_GET['filterTanggalStart'] : '';
 			$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
 			$filterKeterangan = isset($_GET['filterKeterangan']) ? $_GET['filterKeterangan'] : '';
 			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
-           $sql = "SELECT * FROM claim_xforce";
+			$filterStatus = isset($_GET['filterStatus']) ? $_GET['filterStatus'] : '';
+			$filterLine = isset($_GET['filterLine']) ? $_GET['filterLine'] : ''; // Perbaikan pada filterLine
+			$sql = "SELECT * FROM claim_xforce";
 
-if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
-    $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
-}
+			if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
+				$sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+			}
 
-if (!empty($filterKeterangan)) {
-    $sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
-    $sql .= " keterangan = '$filterKeterangan'";
-}
+			if (!empty($filterKeterangan)) {
+				$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
+				$sql .= " keterangan = '$filterKeterangan'";
+			}
 
-if (!empty($filterShift)) {
-    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan)) ? " WHERE" : " AND";
-    $sql .= " shift = '$filterShift'";
-}
+			if (!empty($filterShift)) {
+				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan)) ? " WHERE" : " AND";
+				$sql .= " shift = '$filterShift'";
+			}
 
-$result = mysqli_query($koneksi, $sql);
+			if (!empty($filterStatus)) {
+				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift)) ? " WHERE" : " AND";
+				$sql .= " status = '$filterStatus'";
+			}
+
+			if (!empty($filterLine)) {
+				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus)) ? " WHERE" : " AND";
+				$sql .= " line = '$filterLine'";
+			}
+
+			$result = mysqli_query($koneksi, $sql);
 
             if (mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) {
@@ -203,6 +266,10 @@ $result = mysqli_query($koneksi, $sql);
                     echo "<td>" . $row["tanggal"] . "</td>";
                     echo "<td>" . $row["shift"] . "</td>";
                     echo "<td>" . $row["keterangan"] . "</td>";
+					echo "<td>" . $row["status"] . "</td>";
+					echo "<td>" . $row["line"] . "</td>";
+					echo "<td>" . $row["nama_teknisi"] . "</td>";
+					echo "<td>" . $row["no_rangka"] . "</td>";
 
                     if ($row["keterangan"] == "Stok Masuk") {
                         foreach ($totalStokMasukClaim as $key => $value) {
@@ -214,22 +281,21 @@ $result = mysqli_query($koneksi, $sql);
                         }
                     }
 
-                    echo "<td>" . $row["kdp"] . "</td>";
-                    echo "<td>" . $row["kbg"] . "</td>";
-                    echo "<td>" . $row["kpkr"] . "</td>";
-                    echo "<td>" . $row["kpkn"] . "</td>";
-                    echo "<td>" . $row["kskr"] . "</td>";
-                    echo "<td>" . $row["kskn"] . "</td>";
-                    echo "<td>" . $row["kmkr"] . "</td>";
-                    echo "<td>" . $row["kmkn"] . "</td>";
+                    echo "<td>" . $row["kdp"] 	. " " .$row["alasan_kdp"] . "</td>";
+                    echo "<td>" . $row["kbg"] 	. " ".$row["alasan_kbg"] . "</td>";
+                    echo "<td>" . $row["kpkr"] 	. " ".$row["alasan_kpkr"] . "</td>";
+                    echo "<td>" . $row["kpkn"]	. " ".$row["alasan_kpkn"] . "</td>";
+                    echo "<td>" . $row["kskr"] 	. " ".$row["alasan_kskr"] . "</td>";
+                    echo "<td>" . $row["kskn"] 	. " ".$row["alasan_kskn"] . "</td>";
+                    echo "<td>" . $row["kmkr"] . " ".$row["alasan_kmkr"] . "</td>";
+                    echo "<td>" . $row["kmkn"] . " ".$row["alasan_kmkn"] . "</td>";
 
                     echo "</tr>";
                     $no++;
                 }
 
-             
             } else {
-                echo "<tr><td colspan='12'>Tidak ada data</td></tr>";
+                echo "<tr><td colspan='15'>Tidak ada data</td></tr>";
             }
 
             mysqli_close($koneksi);
@@ -237,7 +303,7 @@ $result = mysqli_query($koneksi, $sql);
         </tbody>
 		<tfoot>
             <tr>
-                <td colspan='4'>Total Stok Masuk</td>
+                <td colspan='8'>Total Stok Masuk</td>
                 <?php
                 foreach ($totalStokMasukClaim as $value) {
                     echo "<td>$value</td>";
@@ -246,7 +312,7 @@ $result = mysqli_query($koneksi, $sql);
                 ?>
             </tr>
             <tr>
-                <td colspan='4'>Total Stok Keluar</td>
+                <td colspan='8'>Total Stok Keluar</td>
                 <?php
                 foreach ($totalStokKeluarClaim as $value) {
                     echo "<td>$value</td>";
@@ -255,14 +321,12 @@ $result = mysqli_query($koneksi, $sql);
                 ?>
             </tr>
             <tr>
-                <td colspan='4'>Total Stok Tersedia</td>
+                <td colspan='8'>Total Stok Tersedia</td>
                 <?php
                 foreach ($totalStokMasukClaim as $key => $value) {
                     $totalStokTersediaClaim[$key] = $totalStokMasukClaim[$key] - $totalStokKeluarClaim[$key];
                     echo "<td>$totalStokTersediaClaim[$key]</td>";
                 }
-
-                
                 ?>
             </tr>
         </tfoot>
@@ -283,13 +347,13 @@ $result = mysqli_query($koneksi, $sql);
             var select = document.getElementById('showEntriesSelect');
             var selectedValue = parseInt(select.value);
 
-            // Show all rows
+            
             var rows = table.querySelectorAll('tbody tr');
             rows.forEach(function (row) {
                 row.style.display = '';
             });
 
-            // Hide rows based on selected value
+            
             if (selectedValue !== -1) {
                 for (var i = selectedValue; i < rows.length; i++) {
                     rows[i].style.display = 'none';
@@ -300,5 +364,6 @@ $result = mysqli_query($koneksi, $sql);
         showEntries(10);
     });
     </script>
+
 </body>
 </html>

@@ -1,6 +1,11 @@
 <?php
-
+session_start();
 include 'koneksi.php';
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $tanggal = $shift = $nama = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
 $pesan = '';
 
