@@ -199,22 +199,22 @@ if (isset($_GET['logout'])) {
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="menu">
-                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Laporan Stok Gudang Xpander</a>
-                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Laporan Stok Gudang Xforce</a>
-                <a href="stok_claim_xpander.php">Laporan Stok Claim Xpander</a>
-                <a href="stok_claim_xforce.php">Laporan Stok Claim Xforce</a>
-                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Laporan Stok Heating Xpander</a>
-                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Laporan Stok Heating Xforce</a>
+                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Stok Gudang Xpander</a>
+                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Stok Gudang Xforce</a>
+                <a href="stok_claim_xpander.php">Stok Claim Xpander</a>
+                <a href="stok_claim_xforce.php">Stok Claim Xforce</a>
+                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
+                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
                 <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
-                <a href="?logout">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </div>
 <div class="content">
-    <h1>Dashboard Stok Heating Mingguan Xpander</h1>
+    <h2>Dashboard Stok Heating Mingguan Xpander</h2>
 	
 	<div class="button-container">
 		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
@@ -222,7 +222,7 @@ if (isset($_GET['logout'])) {
 		<a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
 		<a href="input_ht_xpander.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
-		<a href="?logout" class="logout">Logout</a>
+		
     </div>
 	
 	<div class="form-group">

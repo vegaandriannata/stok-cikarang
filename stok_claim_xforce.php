@@ -190,6 +190,13 @@ if (isset($_GET['logout'])) {
         flex: 1;
         background-color: white; /* White background color for content */
     }
+	.stok-masuk {
+    background-color: #00FF00; /* Green color for "Stok Masuk" */
+}
+
+.stok-keluar {
+    background-color: #FF0000; /* Red color for "Stok Keluar" */
+}
     </style>
 </head>
 <body>
@@ -201,29 +208,29 @@ if (isset($_GET['logout'])) {
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="menu">
-                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Laporan Stok Gudang Xpander</a>
-                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Laporan Stok Gudang Xforce</a>
-                <a href="stok_claim_xpander.php">Laporan Stok Claim Xpander</a>
-                <a href="stok_claim_xforce.php">Laporan Stok Claim Xforce</a>
-                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Laporan Stok Heating Xpander</a>
-                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Laporan Stok Heating Xforce</a>
+                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Stok Gudang Xpander</a>
+                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Stok Gudang Xforce</a>
+                <a href="stok_claim_xpander.php">Stok Claim Xpander</a>
+                <a href="stok_claim_xforce.php">Stok Claim Xforce</a>
+                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
+                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
                 <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
-                <a href="?logout">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </div>
 <div class="content">
-    <h1>Dashboard Stok Claim xforce</h1>
+    <h2>Dashboard Stok Claim xforce</h2>
     <div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_claim_xforce.php"style="margin-right:1%;">Reset Filter</a>
         <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_claim_xforce.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
-		<a href="?logout" class="logout">Logout</a>
+		
     </div>
 	<div class="form-group">
     <form method="get" action="" class="filter-form">
@@ -260,7 +267,12 @@ if (isset($_GET['logout'])) {
         <option value="5">5</option>
         <option value="6">6	</option>
     </select>
-	
+	<label for="filterTipeMobil">Tipe Mobil:</label>
+    <select id="filterTipeMobil" name="filterTipeMobil">
+        <option value="">-- All --</option>
+        <option value="Xforce Exceed">Xforce Exceed</option>
+        <option value="Xforce Ultimate">Xforce Ultimate</option>
+    </select>
 	
 
         <button type="submit">Filter</button>
@@ -329,38 +341,52 @@ if (isset($_GET['logout'])) {
 			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
 			$filterStatus = isset($_GET['filterStatus']) ? $_GET['filterStatus'] : '';
 			$filterLine = isset($_GET['filterLine']) ? $_GET['filterLine'] : ''; // Perbaikan pada filterLine
+			$filterTipeMobil = isset($_GET['filterTipeMobil']) ? $_GET['filterTipeMobil'] : '';
 			$sql = "SELECT * FROM claim_xforce";
 
-			if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
-				$sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
-			}
+if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
+    $sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+}
 
-			if (!empty($filterKeterangan)) {
-				$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
-				$sql .= " keterangan = '$filterKeterangan'";
-			}
+if (!empty($filterKeterangan)) {
+    $sql .= (empty($filterTanggalStart)) ? " WHERE" : " AND";
+    $sql .= " keterangan = '$filterKeterangan'";
+}
 
-			if (!empty($filterShift)) {
-				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan)) ? " WHERE" : " AND";
-				$sql .= " shift = '$filterShift'";
-			}
+if (!empty($filterShift)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan)) ? " WHERE" : " AND";
+    $sql .= " shift = '$filterShift'";
+}
 
-			if (!empty($filterStatus)) {
-				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift)) ? " WHERE" : " AND";
-				$sql .= " status = '$filterStatus'";
-			}
+if (!empty($filterStatus)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift)) ? " WHERE" : " AND";
+    $sql .= " status = '$filterStatus'";
+}
 
-			if (!empty($filterLine)) {
-				$sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus)) ? " WHERE" : " AND";
-				$sql .= " line = '$filterLine'";
-			}
+if (!empty($filterLine)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus)) ? " WHERE" : " AND";
+    $sql .= " line = '$filterLine'";
+}
 
-			$result = mysqli_query($koneksi, $sql);
+if (!empty($filterTipeMobil)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus) && empty($filterLine)) ? " WHERE" : " AND";
+    $sql .= " tipe_mobil = '$filterTipeMobil'";
+}
+
+$result = mysqli_query($koneksi, $sql);
+
 
             if (mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) {
                     echo "<tr>";
-                    echo "<td>" . $no . "</td>";
+					if ($row["keterangan"] == "Stok Masuk") {
+						echo "<td class='stok-masuk'>" . $no . "</td>";
+					} elseif ($row["keterangan"] == "Stok Keluar") {
+						echo "<td class='stok-keluar'>" . $no . "</td>";
+					}elseif ($row["keterangan"] == "Stok Masuk Dari Line") {
+						echo "<td class='stok-masuk-dari-line'>" . $no . "</td>";
+					}
+                    
                     echo "<td>" . $row["tanggal"] . "</td>";
                     echo "<td>" . $row["shift"] . "</td>";
                     echo "<td>" . $row["keterangan"] . "</td>";

@@ -11,6 +11,7 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit();
 }
+$userName = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +44,7 @@ if (isset($_GET['logout'])) {
         }
 
         .button-container {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .button-container a, .button-container button {
@@ -137,6 +138,11 @@ if (isset($_GET['logout'])) {
         text-align: center;
         margin: 20px 0;
     }
+	h3 {
+        text-align: right;
+        margin: 20px 0;
+		
+    }
 
     .container {
         display: flex;
@@ -196,41 +202,84 @@ if (isset($_GET['logout'])) {
         flex: 1;
         background-color: white; /* White background color for content */
     }
+	.inner-header {
+            display: flex;
+            justify-content: space-between;
+			align-items: center;
+        }
+.inner-header {
+        background-color: #fff; /* Dark background color */
+       
+        box-sizing: border-box;
+        color: #000;
+    }
+	
+	
+        .inner-header h2,
+        .inner-header h3,
+		.inner-header h3 img {
+            margin-right: 10px;
+        }
+		.inner-header h3 {
+            display: flex;
+            align-items: center;
+        }
+
+        .inner-header h3 img {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+		
     </style>
 	
 </head>
 <body>
 <div class="header">
-    <h1>Dashboard Laporan Stok</h1>
+
+     
+    <div>
+        <h1>Dashboard Laporan Stok</h1>
+    </div>
+	
+
 </div>
 <div class="container">
 
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="menu">
-                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Laporan Stok Gudang Xpander</a>
-                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Laporan Stok Gudang Xforce</a>
-                <a href="stok_claim_xpander.php">Laporan Stok Claim Xpander</a>
-                <a href="stok_claim_xforce.php">Laporan Stok Claim Xforce</a>
-                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Laporan Stok Heating Xpander</a>
-                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Laporan Stok Heating Xforce</a>
+			
+                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Stok Gudang Xpander</a>
+                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Stok Gudang Xforce</a>
+                <a href="stok_claim_xpander.php">Stok Claim Xpander</a>
+                <a href="stok_claim_xforce.php">Stok Claim Xforce</a>
+                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
+                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
                 <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
-                <a href="?logout">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </div>
 <div class="content">
-     <h1>Dashboard Stok Bahan Mentah Xpander</h1>
+<div class="inner-header">
+<div>
+     <h2>Dashboard Stok Bahan Mentah Xpander </h2>
+	 </div>
+	 
+	 <div class="inner-header">
+		
+        <h3><img style="max-width:30px; "src="asset/image/profile1.png"><?php echo $userName; ?></h3>
+    </div>
+	  </div>
     <div class="button-container">
 		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_mt_xpander.php" style="margin-right:1%;">Reset Filter</a>
         <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_mt_xpander.php" style="margin-right:1%;">Input Stok</a>
 		<button onclick="exportToExcel()">Export to Excel</button>
-		<a href="?logout" class="logout">Logout</a>
+		
     </div>
 	
 	<div class="form-group">
