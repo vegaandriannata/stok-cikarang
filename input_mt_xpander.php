@@ -6,7 +6,7 @@ if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_
     exit();
 }
 
-$tanggal = $shift = $keterangan = '';
+$tanggal = $shift = $keterangan = $deskripsi = '';
 $kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmdkr = $kmdkn= $kmbkr = $kmbkn= $htdp = $htbg = '';
 
 
@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
     $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
     $shift = isset($_POST['shift']) ? $_POST['shift'] : '';
+    $deskripsi = isset($_POST['deskripsi']) ? $_POST['deskripsi'] : '';
 	$kdp = isset($_POST['kdp']) ? $_POST['kdp'] : '';
     $kbg = isset($_POST['kbg']) ? $_POST['kbg'] : '';
     $kpkr = isset($_POST['kpkr']) ? $_POST['kpkr'] : '';
@@ -32,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
 
     
-    $sql = "INSERT INTO mt_xpander (tanggal,shift, keterangan, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn, htdp, htbg)
-            VALUES ('$tanggal','$shift',  '$keterangan', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn', '$htdp', '$htbg')";
+    $sql = "INSERT INTO mt_xpander (tanggal,shift, keterangan,deskripsi, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn, htdp, htbg)
+            VALUES ('$tanggal','$shift',  '$keterangan','$deskripsi', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn', '$htdp', '$htbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
@@ -107,7 +108,11 @@ $koneksi->close();
         <select id="keterangan" name="keterangan" required>
             <option value="Stok Masuk" <?php echo ($keterangan == 'stok_masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
             <option value="Stok Keluar" <?php echo ($keterangan == 'stok_keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
+            <option value="Stok Masuk Dari Line" <?php echo ($keterangan == 'stok_masuk_dari_line') ? 'selected' : ''; ?>>Stok Masuk Dari Line</option>
         </select>
+		
+        <label for="deskripsi">Tanggal:</label>
+        <input type="text" id="deskripsi" name="deskripsi" value="<?php echo $deskripsi; ?>" required>
 
 		<p style="font-weight:bold;">Stok Mold</p>
 <div style="display: flex; flex-wrap: wrap;">

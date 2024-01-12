@@ -6,7 +6,7 @@ if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_
     exit();
 }
 
-$tanggal = $shift = $line = $keterangan = $status = $no_rangka = '';
+$tanggal = $shift = $line = $keterangan = $status = $no_rangka = $tipe_mobil = '';
 $kdp = $kbg = $kpkr = $kpkn = $kskr = $kskn = $kmdkr = $kmdkn= $kmbkr = $kmbkn=  '';
 $alasan_kdp = $alasan_kbg = $alasan_kpkr = $alasan_kpkn = $alasan_kskr = $alasan_kskn = $alasan_kmdkr = $alasan_kmdkn= $alasan_kmbkr = $alasan_kmbkn=  '';
 
@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';$keterangan = isset($_POST['keterangan']) ? $_POST['keterangan'] : '';
 	$status = isset($_POST['status']) ? $_POST['status'] : '';
 	$no_rangka = isset($_POST['no_rangka']) ? $_POST['no_rangka'] : '';
+	$tipe_mobil = isset($_POST['tipe_mobil']) ? $_POST['tipe_mobil'] : '';
     $shift = isset($_POST['shift']) ? $_POST['shift'] : '';
 	$line = isset($_POST['line']) ? $_POST['line'] : '';
 	$kdp = isset($_POST['kdp']) ? $_POST['kdp'] : '';
@@ -61,12 +62,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_teknisi = isset($_POST['nama_teknisi']) ? $_POST['nama_teknisi'] : '';
 
     $sql = "INSERT INTO claim_xpander 
-        (tanggal, shift, line, keterangan, nama_teknisi, status, no_rangka, 
+        (tanggal, shift, line, keterangan,tipe_mobil, nama_teknisi, status, no_rangka, 
          kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn, kmbkr, kmbkn,
          alasan_kdp, alasan_kbg, alasan_kpkr, alasan_kpkn, alasan_kskr, 
          alasan_kskn, alasan_kmdkr, alasan_kmdkn, alasan_kmbkr, alasan_kmbkn)
         VALUES 
-        ('$tanggal', '$shift', '$line', '$keterangan', '$nama_teknisi', '$status', '$no_rangka', 
+        ('$tanggal', '$shift', '$line', '$keterangan','$tipe_mobil', '$nama_teknisi', '$status', '$no_rangka', 
          '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn', '$kmbkr', '$kmbkn',
          '$alasan_kdp', '$alasan_kbg', '$alasan_kpkr', '$alasan_kpkn', '$alasan_kskr', 
          '$alasan_kskn', '$alasan_kmdkr', '$alasan_kmdkn', '$alasan_kmbkr', '$alasan_kmbkn')";
@@ -131,6 +132,11 @@ $koneksi->close();
     <?php echo $pesan;  ?>
 
     <form action="" method="post">
+	<div style="display: flex; flex-wrap: wrap;">
+
+    <!-- Section 1 -->
+ <!-- Section 1 -->
+<div style="flex: 0 0 49%; margin-right: 2%;">
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
 
@@ -145,7 +151,15 @@ $koneksi->close();
             <option value="Stok Masuk" <?php echo ($keterangan == 'Stok Masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
             <option value="Stok Keluar" <?php echo ($keterangan == 'Stok Keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
         </select>
-		
+        <label for="tipe_mobil">Tipe Mobil:</label>
+        <select id="tipe_mobil" name="tipe_mobil" required>
+            <option value="Xforce Exeed" <?php echo ($tipe_mobil == 'Xforce Exeed') ? 'selected' : ''; ?>>Xforce Exeed</option>
+            <option value="Xforce Ultimate" <?php echo ($tipe_mobil == 'Xforce Ultimate') ? 'selected' : ''; ?>>Xforce Ultimate</option>
+            <option value="Xpander" <?php echo ($tipe_mobil == 'Xpander') ? 'selected' : ''; ?>>Xpander</option>
+        </select>
+		</div>
+<!-- Section 2 -->
+<div style="flex: 0 0 49%; ">
 		<label for="status">Status:</label>
         <select id="status" name="status" required>
             <option value="Claim" <?php echo ($status == 'Claim') ? 'selected' : ''; ?>>Claim</option>
@@ -171,8 +185,8 @@ $koneksi->close();
             <option value="6" <?php echo ($line == '6') ? 'selected' : ''; ?>>6</option>
 			
         </select>
-
-		<p>Stok Mold</p>
+</div></div>
+		<p>Bagian Kaca</p>
 		<div style="display: flex; flex-wrap: wrap;">
 
     <!-- Section 1 -->

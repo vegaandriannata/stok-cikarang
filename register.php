@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_query($koneksi, $sql);
 
     if ($result) {
-        echo "Registration successful. <a href='login.php'>Login here</a>";
+        echo "Registration successful. <a href='list_admin.php'>Kembali ke list admin</a>";
     } else {
         echo "Error: " . mysqli_error($koneksi);
     }

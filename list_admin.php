@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Teknisi</title>
-    <style>
+    <title>Dashboard Admin</title>
+   <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -160,11 +160,11 @@
             </div>
         </div>
 <div class="content">
-<h2>Dashboard Teknisi</h2>	
+<h2>Dashboard Admin</h2>	
 <div class="button-container">
 	
         <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
-        <a href="input_teknisi.php"style="margin-right:1%;">Input Teknisi </a>
+        <a href="register.php"style="margin-right:1%;">Register Admin </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		<a href="?logout" class="logout">Logout</a>
     </div>
@@ -173,7 +173,7 @@
 include 'koneksi.php';
 
 // Query untuk mendapatkan data teknisi
-$query = "SELECT * FROM teknisi";
+$query = "SELECT * FROM users";
 $result = mysqli_query($koneksi, $query);
 ?>
 
@@ -184,7 +184,11 @@ $result = mysqli_query($koneksi, $query);
 if (mysqli_num_rows($result) > 0) {
     // Tampilkan data dalam tabel
     echo "<table>";
-    echo "<tr><th>No</th><th>Nama Teknisi</th></tr>";
+    echo "<tr>
+	<th>No</th>
+	<th>Nama Admin</th>
+	<th>Username</th>
+	</tr>";
 
     $no = 1; // Inisialisasi nomor urut
 
@@ -192,13 +196,14 @@ if (mysqli_num_rows($result) > 0) {
         echo "<tr>";
         echo "<td>" . $no++ . "</td>";
        
-        echo "<td>" . $row["nama_teknisi"] . "</td>";
+        echo "<td>" . $row["nama"] . "</td>";
+        echo "<td>" . $row["username"] . "</td>";
         echo "</tr>";
     }
 
     echo "</table>";
 } else {
-    echo "<p>Tidak ada data teknisi.</p>";
+    echo "<p>Tidak ada data admin.</p>";
 }
 
 // Tutup koneksi

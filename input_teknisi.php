@@ -33,7 +33,7 @@
             margin-bottom: 8px;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
@@ -60,13 +60,16 @@
 // Sisipkan koneksi.php
 include 'koneksi.php';
 
+
+$heating = '';
 // Proses form jika form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil nilai dari form
     $namaTeknisi = $_POST["nama_teknisi"];
+    $heating = $_POST["heating"];
 
     // Query untuk insert data ke tabel teknisi
-    $query = "INSERT INTO teknisi (nama_teknisi) VALUES ('$namaTeknisi')";
+    $query = "INSERT INTO teknisi (nama_teknisi, heating) VALUES ('$namaTeknisi', '$heating')";
 
     // Eksekusi query
     $result = mysqli_query($koneksi, $query);
@@ -87,9 +90,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Tambah Data Teknisi</h2>
 
         <label for="nama_teknisi">Nama Teknisi:</label>
-        <input type="text" name="nama_teknisi" required>
+        <input type="text" name="nama_teknisi" required> 
 		
+		<label for="heating">Heating:</label>
+       <select id="heating" name="heating" required>
+            <option value="YES" <?php echo ($heating == 'YES') ? 'selected' : ''; ?>>YES</option>
+            <option value="NO" <?php echo ($heating == 'NO') ? 'selected' : ''; ?>>NO</option>
+            
+		</select>
 		<button type="submit">Tambah Teknisi</button>
+		<a href="list_teknisi.php">Kembali</a>
     </form>
 
 </body>

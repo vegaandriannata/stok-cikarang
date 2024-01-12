@@ -6,14 +6,28 @@ if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_
     exit();
 }
 
-$tanggal = $shift = $nama = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
+$tanggal = $shift  = $tdp = $tbg = $hdp = $hbg = $cdp = $cbg = '';
 $pesan = '';
+
+$teknisi_options = ''; // Variable to store technician options
+
+// Fetch technician names from the database
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE heating = 'YES'";
+$result_teknisi = $koneksi->query($sql_teknisi);
+
+if ($result_teknisi->num_rows > 0) {
+    while ($row_teknisi = $result_teknisi->fetch_assoc()) {
+        $teknisi_name = $row_teknisi['nama_teknisi'];
+        $teknisi_options .= "<option value='$teknisi_name'>$teknisi_name</option>";
+    }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
 	$shift = isset($_POST['shift']) ? $_POST['shift'] : '';
-    $nama = isset($_POST['nama']) ? $_POST['nama'] : '';
+   
+    $nama_teknisi = isset($_POST['nama_teknisi']) ? $_POST['nama_teknisi'] : '';
     $tdp = isset($_POST['tdp']) ? $_POST['tdp'] : '';
     $tbg = isset($_POST['tbg']) ? $_POST['tbg'] : '';
 	$hdp = isset($_POST['hdp']) ? $_POST['hdp'] : '';
@@ -21,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$cdp = isset($_POST['cdp']) ? $_POST['cdp'] : '';
     $cbg = isset($_POST['cbg']) ? $_POST['cbg'] : '';
     
-    $sql = "INSERT INTO ht_xpander (tanggal, shift, nama, tdp, tbg, hdp, hbg, cdp, cbg)
-            VALUES ('$tanggal', '$shift', '$nama', '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
+    $sql = "INSERT INTO ht_xpander (tanggal,shift,nama_teknisi , tdp, tbg, hdp, hbg, cdp, cbg)
+            VALUES ('$tanggal', '$shift','$nama_teknisi',  '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
@@ -93,9 +107,11 @@ $koneksi->close();
         <option value="Pagi" <?php if ($shift == "Pagi") echo "selected"; ?>>Pagi</option>
         <option value="Malam" <?php if ($shift == "Malam") echo "selected"; ?>>Malam</option>
     </select>
-
-        <label for="nama">Nama:</label>
-        <input type="text" id="nama" name="nama" value="<?php echo $nama; ?>" >
+	
+       <label for="nama_teknisi">Nama Teknisi:</label>
+		<select id="nama_teknisi" name="nama_teknisi" required>
+			<?php echo $teknisi_options; ?>
+		</select>
 
         <label for="tdp">Terima Depan:</label>
         <input type="number" id="tdp" name="tdp" value="<?php echo $tdp; ?>" >

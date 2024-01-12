@@ -13,7 +13,7 @@ if (isset($_POST['login'])) {
 
     if ($result->num_rows == 1) {
         $_SESSION['username'] = $username;
-		 $_SESSION["timeout"] = time() + 24 * 60 * 60;
+		 $_SESSION["timeout"] = PHP_INT_MAX;
         header("Location: dashboard-stok.php");
         exit();
     } else {

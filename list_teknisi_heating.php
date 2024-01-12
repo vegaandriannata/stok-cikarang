@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Teknisi</title>
+    <title>Dashboard Teknisi Heating</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -160,7 +160,7 @@
             </div>
         </div>
 <div class="content">
-<h2>Dashboard Teknisi</h2>	
+<h2>Dashboard Teknisi Heating</h2>	
 <div class="button-container">
 	
         <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
@@ -173,7 +173,7 @@
 include 'koneksi.php';
 
 // Query untuk mendapatkan data teknisi
-$query = "SELECT * FROM teknisi";
+$query = "SELECT * FROM teknisi WHERE heating = 'YES'";
 $result = mysqli_query($koneksi, $query);
 ?>
 
