@@ -365,6 +365,13 @@ $userName = $_SESSION['username'];
                 'kskr' => 0, 'kskn' => 0, 'kmdkr' => 0, 'kmdkn' => 0,
                 'kmbkr' => 0, 'kmbkn' => 0
             ];
+			$totalStokMasukLineMold = [
+				'kdp' => 0, 'kbg' => 0, 'kpkr' => 0, 'kpkn' => 0,
+				'kskr' => 0, 'kskn' => 0, 'kmdkr' => 0, 'kmdkn' => 0,
+				'kmbkr' => 0, 'kmbkn' => 0
+			];
+
+			$totalStokMasukLineHeating = ['htdp' => 0, 'htbg' => 0];
             $totalStokMasukHeating = ['htdp' => 0, 'htbg' => 0];
             $totalStokKeluarHeating = ['htdp' => 0, 'htbg' => 0];
 			$no = 1;
@@ -424,15 +431,24 @@ $userName = $_SESSION['username'];
                         foreach ($totalStokMasukHeating as $key => $value) {
                             $totalStokMasukHeating[$key] += $row[$key];
                         }
-                    } elseif ($row["keterangan"] == "Stok Keluar") {
-                        foreach ($totalStokKeluarMold as $key => $value) {
-                            $totalStokKeluarMold[$key] += $row[$key];
-                        }
+						} elseif ($row["keterangan"] == "Stok Keluar") {
+							foreach ($totalStokKeluarMold as $key => $value) {
+								$totalStokKeluarMold[$key] += $row[$key];
+							}
 
-                        foreach ($totalStokKeluarHeating as $key => $value) {
-                            $totalStokKeluarHeating[$key] += $row[$key];
-                        }
-                    }
+							foreach ($totalStokKeluarHeating as $key => $value) {
+								$totalStokKeluarHeating[$key] += $row[$key];
+							}
+						} elseif ($row["keterangan"] == "Stok Masuk Dari Line") {
+							// Increment total stock in from the line
+							foreach ($totalStokMasukLineMold as $key => $value) {
+								$totalStokMasukLineMold[$key] += $row[$key];
+							}
+
+							foreach ($totalStokMasukLineHeating as $key => $value) {
+								$totalStokMasukLineHeating[$key] += $row[$key];
+							}
+						}
 						
                         echo "<td>" . $row["kdp"] . "</td>";
                         echo "<td>" . $row["kbg"] . "</td>";
@@ -482,18 +498,29 @@ $userName = $_SESSION['username'];
                 ?>
             </tr>
             <tr>
-                <td colspan='5'>Total Stok Tersedia</td>
+                <td colspan='5'>Total Stok Masuk Dari Line</td>
                 <?php
-                foreach ($totalStokMasukMold as $key => $value) {
-                    $totalStokTersediaMold[$key] = $totalStokMasukMold[$key] - $totalStokKeluarMold[$key];
-                    echo "<td>$totalStokTersediaMold[$key]</td>";
-                }
-
-                foreach ($totalStokMasukHeating as $key => $value) {
-                    $totalStokTersediaHeating[$key] = $totalStokMasukHeating[$key] - $totalStokKeluarHeating[$key];
-                    echo "<td>$totalStokTersediaHeating[$key]</td>";
-                }
+                foreach ($totalStokMasukLineMold as $value) {
+					echo "<td>$value</td>";
+				}
+				foreach ($totalStokMasukLineHeating as $value) {
+					echo "<td>$value</td>";
+				}
                 ?>
+            </tr>
+            <tr>
+                <td colspan='5'>Total Stok Tersedia</td>
+				<?php
+				foreach ($totalStokMasukMold as $key => $value) {
+					$totalStokTersediaMold[$key] = $totalStokMasukMold[$key] - $totalStokKeluarMold[$key] + $totalStokMasukLineMold[$key];
+					echo "<td>$totalStokTersediaMold[$key]</td>";
+				}
+
+				foreach ($totalStokMasukHeating as $key => $value) {
+					$totalStokTersediaHeating[$key] = $totalStokMasukHeating[$key] - $totalStokKeluarHeating[$key] + $totalStokMasukLineHeating[$key];
+					echo "<td>$totalStokTersediaHeating[$key]</td>";
+				}
+				?>
             </tr>
         </tfoot>
     </table>
