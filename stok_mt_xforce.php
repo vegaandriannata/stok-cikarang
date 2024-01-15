@@ -34,7 +34,7 @@ $userName = $_SESSION['username'];
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
         }
 
@@ -395,7 +395,7 @@ $userName = $_SESSION['username'];
                     echo "<td>" . $row["tanggal"] . "</td>";
                     echo "<td>" . $row["shift"] . "</td>";
                     echo "<td>" . $row["keterangan"] . "</td>";
-                    echo "<td>" . $row["deskripsi"] . "</td>";
+                    echo "<td style='word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; width: 100px;'>" . $row["deskripsi"] . "</td>";
 
                     if ($row["keterangan"] == "Stok Masuk") {
                         foreach ($totalStokMasukMold as $key => $value) {
@@ -477,6 +477,13 @@ $userName = $_SESSION['username'];
             </tr>
         </tfoot>
     </table>
+	<div class="button-container">
+    <!-- Add pagination buttons -->
+    <button onclick="prevPage()">Previous</button>
+    <button onclick="nextPage()">Next</button>
+
+    
+</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
@@ -487,28 +494,69 @@ $userName = $_SESSION['username'];
 		function exportToExcel() {
         var table = document.querySelector('table');
         var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
-        XLSX.writeFile(wb, 'stok_mt_xforce.xlsx');
+        XLSX.writeFile(wb, 'stok_gudang_xforce.xlsx');
     }
-	function showEntries() {
-            var table = document.querySelector('table');
-            var select = document.getElementById('showEntriesSelect');
-            var selectedValue = parseInt(select.value);
+	var currentPage = 1;
+    var rowsPerPage = 10;
+    var totalRows = 0;
 
-           
-            var rows = table.querySelectorAll('tbody tr');
-            rows.forEach(function (row) {
-                row.style.display = '';
-            });
+    function showPage(page) {
+        var table = document.querySelector('table');
+        var rows = table.querySelectorAll('tbody tr');
 
-            
-            if (selectedValue !== -1) {
-                for (var i = selectedValue; i < rows.length; i++) {
-                    rows[i].style.display = 'none';
-                }
+        totalRows = rows.length;
+
+        var startIndex = (page - 1) * rowsPerPage;
+        var endIndex = startIndex + rowsPerPage;
+
+        for (var i = 0; i < totalRows; i++) {
+            if (i >= startIndex && i < endIndex) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
             }
         }
-		 document.addEventListener("DOMContentLoaded", function() {
-        showEntries(10);
+
+        // Update pagination buttons
+        updatePaginationButtons(page);
+    }
+
+    function updatePaginationButtons(currentPage) {
+        var prevButton = document.querySelector('.button-container button:first-child');
+        var nextButton = document.querySelector('.button-container button:last-child');
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === Math.ceil(totalRows / rowsPerPage);
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < Math.ceil(totalRows / rowsPerPage)) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    }
+
+    function showEntries() {
+        var select = document.getElementById('showEntriesSelect');
+        var selectedValue = parseInt(select.value);
+
+        rowsPerPage = selectedValue;
+
+        // Reset to the first page
+        currentPage = 1;
+        showPage(currentPage);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize pagination
+        showPage(currentPage);
     });
     </script>
 </body>

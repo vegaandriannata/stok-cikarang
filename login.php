@@ -87,6 +87,7 @@ if (isset($_SESSION['timeout']) && time() > $_SESSION['timeout']) {
     ?>
 
     <form method="post" action="">
+	<h2 style="text-align:center;">Login</h2>
         <label for="username">Username:</label>
         <input type="text" name="username" required><br>
 

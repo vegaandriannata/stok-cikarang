@@ -50,6 +50,7 @@ if ($result_teknisi->num_rows > 0) {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+			
         }
 
         th {
@@ -58,7 +59,7 @@ if ($result_teknisi->num_rows > 0) {
         }
 
         .button-container {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .button-container a, .button-container button {
@@ -354,8 +355,8 @@ if ($result_teknisi->num_rows > 0) {
                 <th rowspan="2">Keterangan</th>
 				<th rowspan="2">Status</th>
 				<th rowspan="2">Line</th>
-				<th rowspan="2">Nama Teknisi</th>
-				<th rowspan="2">Tipe Mobil</th>
+				<th rowspan="2">Nama <br> Teknisi</th>
+				<th rowspan="2">Tipe <br> Mobil</th>
 				<th rowspan="2">No Ranka</th>
                 <th colspan="10">Claim</th>
             </tr>
@@ -363,12 +364,12 @@ if ($result_teknisi->num_rows > 0) {
             <tr>
                 <th>Depan</th>
                 <th>Bagasi</th>
-                <th>Sopir Kiri</th>
-                <th>Sopir Kanan</th>
-                <th>Penumpang Kiri</th>
-                <th>Penumpang Kanan</th>
-                <th>Mati Belakang Kiri</th>
-                <th>Mati Belakang Kanan</th>
+                <th>Sopir <br> Kiri</th>
+                <th>Sopir <br> Kanan</th>
+                <th>Penumpang<br>Kiri</th>
+                <th>Penumpang<br>Kanan</th>
+                <th>Mati Belakang<br>Kiri</th>
+                <th>Mati Belakang<br>Kanan</th>
             </tr>
         </thead>
         <tbody>
@@ -514,6 +515,13 @@ $result = mysqli_query($koneksi, $sql);
             </tr>
         </tfoot>
     </table>
+	<div class="button-container">
+    <!-- Add pagination buttons -->
+    <button onclick="prevPage()">Previous</button>
+    <button onclick="nextPage()">Next</button>
+
+    
+</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 <script>
@@ -526,26 +534,67 @@ $result = mysqli_query($koneksi, $sql);
         var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
         XLSX.writeFile(wb, 'stok_claim_xforce.xlsx');
     }
-	function showEntries() {
-            var table = document.querySelector('table');
-            var select = document.getElementById('showEntriesSelect');
-            var selectedValue = parseInt(select.value);
+	var currentPage = 1;
+    var rowsPerPage = 10;
+    var totalRows = 0;
 
-            
-            var rows = table.querySelectorAll('tbody tr');
-            rows.forEach(function (row) {
-                row.style.display = '';
-            });
+    function showPage(page) {
+        var table = document.querySelector('table');
+        var rows = table.querySelectorAll('tbody tr');
 
-            
-            if (selectedValue !== -1) {
-                for (var i = selectedValue; i < rows.length; i++) {
-                    rows[i].style.display = 'none';
-                }
+        totalRows = rows.length;
+
+        var startIndex = (page - 1) * rowsPerPage;
+        var endIndex = startIndex + rowsPerPage;
+
+        for (var i = 0; i < totalRows; i++) {
+            if (i >= startIndex && i < endIndex) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
             }
         }
-		 document.addEventListener("DOMContentLoaded", function() {
-        showEntries(10);
+
+        // Update pagination buttons
+        updatePaginationButtons(page);
+    }
+
+    function updatePaginationButtons(currentPage) {
+        var prevButton = document.querySelector('.button-container button:first-child');
+        var nextButton = document.querySelector('.button-container button:last-child');
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === Math.ceil(totalRows / rowsPerPage);
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < Math.ceil(totalRows / rowsPerPage)) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    }
+
+    function showEntries() {
+        var select = document.getElementById('showEntriesSelect');
+        var selectedValue = parseInt(select.value);
+
+        rowsPerPage = selectedValue;
+
+        // Reset to the first page
+        currentPage = 1;
+        showPage(currentPage);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize pagination
+        showPage(currentPage);
     });
     </script>
 

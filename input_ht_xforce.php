@@ -13,7 +13,7 @@ $pesan = '';
 $teknisi_options = ''; // Variable to store technician options
 
 // Fetch technician names from the database
-$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE heating = 'YES'";
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE posisi = 'Heating'";
 $result_teknisi = $koneksi->query($sql_teknisi);
 
 if ($result_teknisi->num_rows > 0) {

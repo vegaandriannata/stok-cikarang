@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include 'koneksi.php';
 // Check if user is not logged in, redirect to login page
 if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
     header("Location: login.php");
@@ -12,6 +12,18 @@ if (isset($_GET['logout'])) {
     exit();
 }
 $userName = $_SESSION['username'];	
+$teknisi_options = ''; // Variable to store technician options
+
+// Fetch technician names from the database
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE posisi='Heating'";
+$result_teknisi = $koneksi->query($sql_teknisi);
+
+if ($result_teknisi->num_rows > 0) {
+    while ($row_teknisi = $result_teknisi->fetch_assoc()) {
+        $teknisi_name = $row_teknisi['nama_teknisi'];
+        $teknisi_options .= "<option value='$teknisi_name'>$teknisi_name</option>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -273,7 +285,11 @@ $userName = $_SESSION['username'];
 				<option value="Pagi">Pagi</option>
 				<option value="Malam">Malam</option>
 			</select>
-
+<label for="filterNama">Nama Teknisi:</label>
+<select id="filterNama" name="filterNama">
+    <option value="">-- All --</option>
+    <?php echo $teknisi_options; ?>
+</select>
 			<button type="submit">Filter</button>
 		</form>
 	</div>
@@ -336,16 +352,28 @@ $userName = $_SESSION['username'];
 			$filterTanggalEnd = isset($_GET['filterTanggalEnd']) ? $_GET['filterTanggalEnd'] : '';
 			
 			$filterShift = isset($_GET['filterShift']) ? $_GET['filterShift'] : '';
+			$filterNama = isset($_GET['filterNama']) ? $_GET['filterNama'] : '';
             $sql = "SELECT * FROM ht_xpander";
-			if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
-				$sql .= " WHERE tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
-			}
-	
-			if (!empty($filterShift)) {
-				$sql .= empty($filterTanggalStart) ? " WHERE" : " AND";
-				$sql .= " shift = '$filterShift'";
-			}
-            $result = mysqli_query($koneksi, $sql);
+$whereClause = array();
+
+if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
+    $whereClause[] = "tanggal BETWEEN '$filterTanggalStart' AND '$filterTanggalEnd'";
+}
+
+if (!empty($filterShift)) {
+    $whereClause[] = "shift = '$filterShift'";
+}
+
+if (!empty($filterNama)) {
+    $whereClause[] = "nama_teknisi = '$filterNama'";
+}
+
+if (!empty($whereClause)) {
+    $sql .= " WHERE " . implode(" AND ", $whereClause);
+}
+
+$result = mysqli_query($koneksi, $sql);
+
 
             if (mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) {

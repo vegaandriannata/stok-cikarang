@@ -205,22 +205,32 @@ $koneksi->close();
     <?php echo $pesan;  ?>
 
     <form action="" method="post">
+	 <!-- Section 1 -->
+	 <div style="display: flex; flex-wrap: wrap;">
+    <div style="flex: 0 0 32%; margin-right: 2%;">
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
+</div>
 
+    <!-- Section 2 -->
+    <div style="flex: 0 0 32%;margin-right: 2%;">
 		 <label for="shift">Shift:</label>
         <select id="shift" name="shift" required>
             <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
             <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
         </select>
+</div>
 
+    <!-- Section 2 -->
+    <div style="flex: 0 0 32%;">
         <label for="keterangan">Keterangan:</label>
         <select id="keterangan" name="keterangan" required>
             <option value="Stok Masuk" <?php echo ($keterangan == 'Stok Masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
             <option value="Stok Keluar" <?php echo ($keterangan == 'Stok Keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
             <option value="Stok Masuk Dari Line" <?php echo ($keterangan == 'Stok Masuk Dari Line') ? 'selected' : ''; ?>>Stok Masuk Dari Line</option>
         </select>
-		
+		</div>
+        </div>
 		<label for="deskripsi">Deskripsi:</label>
         <input type="text" id="deskripsi" name="deskripsi" value="<?php echo $deskripsi; ?>" >
 
