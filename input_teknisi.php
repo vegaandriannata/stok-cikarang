@@ -1,3 +1,51 @@
+<?php
+session_start();
+// Sisipkan koneksi.php
+include 'koneksi.php';
+
+
+$posisi = '';
+// Proses form jika form disubmit
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Ambil nilai dari form
+    $namaTeknisi = $_POST["nama_teknisi"];
+    $posisi = $_POST["posisi"];
+
+	$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+    // Query untuk insert data ke tabel teknisi
+    $query = "INSERT INTO teknisi (nama_teknisi, posisi) VALUES ('$namaTeknisi', '$posisi')";
+
+    // Eksekusi query
+    $result = mysqli_query($koneksi, $query);
+
+    // Cek apakah data berhasil disimpan
+    if ($result) {
+    // Insert data into histori_admin table
+    $admin_username = $_SESSION['username'];
+    $action = "insert"; 
+    $admin_data = $namaTeknisi . '+' . $posisi;
+    $tanggal_input = date("Y-m-d H:i:s");
+
+    $sql_history = $koneksi->prepare("INSERT INTO histori_activity (user, action, data, tanggal, url) VALUES (?, ?, ?, ?, ?)");
+    $sql_history->bind_param("sssss", $admin_username, $action, $admin_data, $tanggal_input, $url);
+
+    if ($sql_history->execute()) {
+        $pesan = "Data teknisi berhasil ditambahkan.";
+        
+        // Redirect to the list_teknisi.php page
+        header("Location: list_teknisi.php");
+        exit();
+    } else {
+        $pesan = "Error inserting history: " . $sql_history->error;
+    }
+} else {
+    $pesan = "Error: " . mysqli_error($koneksi);
+}
+
+
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +65,15 @@
             color: #333;
         }
 
-        form {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 600px;
-            text-align: center;
-        }
+        
+		form {
+			background-color: #ffffff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			max-width: 600px;
+			margin: 0 auto;
+		}	
 
         label {
             display: block;
@@ -143,7 +192,6 @@
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -151,32 +199,7 @@
             </div>
         </div>
 <div class="content">
-<?php
-// Sisipkan koneksi.php
-include 'koneksi.php';
 
-
-$heating = '';
-// Proses form jika form disubmit
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil nilai dari form
-    $namaTeknisi = $_POST["nama_teknisi"];
-    $heating = $_POST["heating"];
-
-    // Query untuk insert data ke tabel teknisi
-    $query = "INSERT INTO teknisi (nama_teknisi, heating) VALUES ('$namaTeknisi', '$heating')";
-
-    // Eksekusi query
-    $result = mysqli_query($koneksi, $query);
-
-    // Cek apakah data berhasil disimpan
-    if ($result) {
-        echo "<p style='color: green;'>Data teknisi berhasil ditambahkan.</p>";
-    } else {
-        echo "<p style='color: red;'>Error: " . mysqli_error($koneksi) . "</p>";
-    }
-}
-?>
 
 
 
@@ -187,10 +210,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="nama_teknisi">Nama Teknisi:</label>
         <input type="text" name="nama_teknisi" required> 
 		
-		<label for="heating">Heating:</label>
-       <select id="heating" name="heating" required>
-            <option value="YES" <?php echo ($heating == 'YES') ? 'selected' : ''; ?>>YES</option>
-            <option value="NO" <?php echo ($heating == 'NO') ? 'selected' : ''; ?>>NO</option>
+		<label for="posisi">Posisi:</label>
+       <select id="posisi" name="posisi" required>
+            <option value="Instalasi" <?php echo ($posisi == 'Instalasi') ? 'selected' : ''; ?>>Instalasi</option>
+            <option value="Heating" <?php echo ($posisi == 'Heating') ? 'selected' : ''; ?>>Heating</option>
+            <option value="Balding" <?php echo ($posisi == 'Balding') ? 'selected' : ''; ?>>Balding</option>
+            <option value="HO" <?php echo ($posisi == 'HO') ? 'selected' : ''; ?>>HO</option>
             
 		</select>
 		<button type="submit">Tambah Teknisi</button>

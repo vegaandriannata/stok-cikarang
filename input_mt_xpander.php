@@ -31,18 +31,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $kmbkn = isset($_POST['kmbkn']) ? $_POST['kmbkn'] : ''; 
 	$htdp = isset($_POST['htdp']) ? $_POST['htdp'] : '';
     $htbg = isset($_POST['htbg']) ? $_POST['htbg'] : '';
+	 $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-    
-    $sql = "INSERT INTO mt_xpander (tanggal,shift, keterangan,deskripsi, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn, htdp, htbg)
+    $sql_insert = "INSERT INTO mt_xpander (tanggal,shift, keterangan,deskripsi, kdp, kbg, kpkr, kpkn, kskr, kskn, kmdkr, kmdkn,kmbkr, kmbkn, htdp, htbg)
             VALUES ('$tanggal','$shift',  '$keterangan','$deskripsi', '$kdp', '$kbg', '$kpkr', '$kpkn', '$kskr', '$kskn', '$kmdkr', '$kmdkn','$kmbkr', '$kmbkn', '$htdp', '$htbg')";
 
-    if ($koneksi->query($sql) === TRUE) {
+    if ($koneksi->query($sql_insert) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        
+
+        // Insert data into histori_admin table
+        $admin_username = $_SESSION['username'];
+        $action = "insert"; 
+        $admin_data = $tanggal . '+' . $shift . '+' . $keterangan . '+' . $deskripsi. '+' . $kdp. '+' . $kbg. '+' . $kpkr. '+' . $kpkn. '+' . $kskr. '+' . $kskn. '+' . $kmdkr. '+' . $kmdkn. '+' . $kmbkr. '+' . $kmbkn. '+' . $htdp. '+' . $htbg;
+        $tanggal_input = date("Y-m-d H:i:s");
+
+        $sql_history = $koneksi->prepare("INSERT INTO histori_activity (user, action, data, tanggal, url) VALUES (?, ?, ?, ?, ?)");
+        $sql_history->bind_param("sssss", $admin_username, $action, $admin_data, $tanggal_input, $url);
+
+        if ($sql_history->execute()) {
+            echo "History inserted successfully";
+        } else {
+            echo "Error inserting history: " . $sql_history->error;
+        }
+
         header("Location: stok_mt_xpander.php");
         exit(); 
     } else {
-        $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
+        $pesan = "Error: " . $sql_insert . "<br>" . $koneksi->error;
     }
 }
 
@@ -180,7 +195,6 @@ $koneksi->close();
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -191,26 +205,36 @@ $koneksi->close();
     <h1>Form Input Stok Bahan Mentah Xpander</h1>
 
     <?php echo $pesan;  ?>
+<div style="display: flex; flex-wrap: wrap;">
 
+    <!-- Section 1 -->
+    <div style="flex: 0 0 32%; margin-right: 2%;">
     <form action="" method="post">
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="tanggal" value="<?php echo $tanggal; ?>" required>
+ </div>
 
+    <!-- Section 2 -->
+    <div style="flex: 0 0 32%;margin-right: 2%;">
 		<label for="shift">Shift:</label>
         <select id="shift" name="shift" required>
             <option value="Pagi" <?php echo ($shift == 'pagi') ? 'selected' : ''; ?>>Pagi</option>
             <option value="Malam" <?php echo ($shift == 'malam') ? 'selected' : ''; ?>>Malam</option>
         </select>
+ </div>
 
+    <!-- Section 2 -->
+    <div style="flex: 0 0 32%;">
         <label for="keterangan">Keterangan:</label>
         <select id="keterangan" name="keterangan" required>
             <option value="Stok Masuk" <?php echo ($keterangan == 'stok_masuk') ? 'selected' : ''; ?>>Stok Masuk</option>
             <option value="Stok Keluar" <?php echo ($keterangan == 'stok_keluar') ? 'selected' : ''; ?>>Stok Keluar</option>
             <option value="Stok Masuk Dari Line" <?php echo ($keterangan == 'stok_masuk_dari_line') ? 'selected' : ''; ?>>Stok Masuk Dari Line</option>
         </select>
-		
-        <label for="deskripsi">Tanggal:</label>
-        <input type="text" id="deskripsi" name="deskripsi" value="<?php echo $deskripsi; ?>" required>
+		 </div>
+        </div>
+        <label for="deskripsi">Deskripsi:</label>
+        <textarea type="text" id="deskripsi" name="deskripsi" value="<?php echo $deskripsi; ?>" ></textarea>
 
 		<p style="font-weight:bold;">Stok Mold</p>
 <div style="display: flex; flex-wrap: wrap;">
@@ -261,12 +285,20 @@ $koneksi->close();
     </div>
 </div>
         <p style="font-weight:bold;">Stok Heating</p>
+		<div style="display: flex; flex-wrap: wrap;">
+
+    <!-- Section 1 -->
+    <div style="flex: 0 0 49%; margin-right: 2%;">
         <label for="htdp">Kaca Depan:</label>
         <input type="number" id="htdp" name="htdp" value="<?php echo $htdp; ?>" required>
+</div>
 
+    <!-- Section 5 -->
+    <div style="flex: 0 0 49%;">
         <label for="htbg">Kaca Bagasi:</label>
         <input type="number" id="htbg" name="htbg" value="<?php echo $htbg; ?>" required>
-		
+		 </div>
+</div>
         <input type="submit" value="Simpan">
     </form>
 	</div>

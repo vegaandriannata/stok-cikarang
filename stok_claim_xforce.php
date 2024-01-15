@@ -1,6 +1,7 @@
 <?php
-session_start();
 
+session_start();
+include 'koneksi.php';
 // Check if user is not logged in, redirect to login page
 if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
     header("Location: login.php");
@@ -10,6 +11,19 @@ if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: login.php");
     exit();
+}
+$userName = $_SESSION['username'];	
+$teknisi_options = ''; // Variable to store technician options
+
+// Fetch technician names from the database
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi";
+$result_teknisi = $koneksi->query($sql_teknisi);
+
+if ($result_teknisi->num_rows > 0) {
+    while ($row_teknisi = $result_teknisi->fetch_assoc()) {
+        $teknisi_name = $row_teknisi['nama_teknisi'];
+        $teknisi_options .= "<option value='$teknisi_name'>$teknisi_name</option>";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -197,6 +211,32 @@ if (isset($_GET['logout'])) {
 .stok-keluar {
     background-color: #FF0000; /* Red color for "Stok Keluar" */
 }
+.inner-header {
+            display: flex;
+            justify-content: space-between;
+			align-items: center;
+        }
+.inner-header {
+        background-color: #fff; /* Dark background color */
+       
+        box-sizing: border-box;
+        color: #000;
+    }
+	
+	
+        .inner-header h2,
+        .inner-header h3,
+		.inner-header h3 img {
+            margin-right: 10px;
+        }
+		.inner-header h3 {
+            display: flex;
+            align-items: center;
+        }
+
+        .inner-header h3 img {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
     </style>
 </head>
 <body>
@@ -215,7 +255,6 @@ if (isset($_GET['logout'])) {
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -223,11 +262,19 @@ if (isset($_GET['logout'])) {
             </div>
         </div>
 <div class="content">
-    <h2>Dashboard Stok Claim xforce</h2>
+    <div class="inner-header">
+<div>
+     <h2>Dashboard Stok Claim Xforce </h2>
+	 </div>
+	 
+	 <div class="inner-header">
+		
+        <h3><img style="max-width:30px; "src="asset/image/profile1.png"><?php echo $userName; ?></h3>
+    </div>
+	  </div>
     <div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_claim_xforce.php"style="margin-right:1%;">Reset Filter</a>
-        <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_claim_xforce.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		
@@ -251,6 +298,12 @@ if (isset($_GET['logout'])) {
         <option value="Stok Masuk">Stok Masuk</option>
         <option value="Stok Keluar">Stok Keluar</option>
     </select>
+	<label for="filterNama">Nama Teknisi:</label>
+<select id="filterNama" name="filterNama">
+    <option value="">-- All --</option>
+    <?php echo $teknisi_options; ?>
+</select>
+
 	<label for="filterStatus">Status:</label>
     <select id="filterStatus" name="filterStatus">
         <option value="">-- All --</option>
@@ -342,6 +395,7 @@ if (isset($_GET['logout'])) {
 			$filterStatus = isset($_GET['filterStatus']) ? $_GET['filterStatus'] : '';
 			$filterLine = isset($_GET['filterLine']) ? $_GET['filterLine'] : ''; // Perbaikan pada filterLine
 			$filterTipeMobil = isset($_GET['filterTipeMobil']) ? $_GET['filterTipeMobil'] : '';
+			$filterNama = isset($_GET['filterNama']) ? $_GET['filterNama'] : '';
 			$sql = "SELECT * FROM claim_xforce";
 
 if (!empty($filterTanggalStart) && !empty($filterTanggalEnd)) {
@@ -371,6 +425,10 @@ if (!empty($filterLine)) {
 if (!empty($filterTipeMobil)) {
     $sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus) && empty($filterLine)) ? " WHERE" : " AND";
     $sql .= " tipe_mobil = '$filterTipeMobil'";
+}
+if (!empty($filterNama)) {
+    $sql .= (empty($filterTanggalStart) && empty($filterKeterangan) && empty($filterShift) && empty($filterStatus) && empty($filterLine) && empty($filterTipeMobil)) ? " WHERE" : " AND";
+    $sql .= " nama_teknisi = '$filterNama'";
 }
 
 $result = mysqli_query($koneksi, $sql);

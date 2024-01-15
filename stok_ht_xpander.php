@@ -11,6 +11,7 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit();
 }
+$userName = $_SESSION['username'];	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,6 +189,32 @@ if (isset($_GET['logout'])) {
         flex: 1;
         background-color: white; /* White background color for content */
     }
+	.inner-header {
+            display: flex;
+            justify-content: space-between;
+			align-items: center;
+        }
+.inner-header {
+        background-color: #fff; /* Dark background color */
+       
+        box-sizing: border-box;
+        color: #000;
+    }
+	
+	
+        .inner-header h2,
+        .inner-header h3,
+		.inner-header h3 img {
+            margin-right: 10px;
+        }
+		.inner-header h3 {
+            display: flex;
+            align-items: center;
+        }
+
+        .inner-header h3 img {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
     </style>
 </head>
 <body>
@@ -206,7 +233,6 @@ if (isset($_GET['logout'])) {
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -214,12 +240,20 @@ if (isset($_GET['logout'])) {
             </div>
         </div>
 <div class="content">
-    <h2>Dashboard Stok Heating Mingguan Xpander</h2>
+    <div class="inner-header">
+<div>
+     <h2>Dashboard Stok Heating Xpander </h2>
+	 </div>
+	 
+	 <div class="inner-header">
+		
+        <h3><img style="max-width:30px; "src="asset/image/profile1.png"><?php echo $userName; ?></h3>
+    </div>
+	  </div>
 	
 	<div class="button-container">
 		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_ht_xpander.php"style="margin-right:1%;">Reset Filter</a>
-		<a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
 		<a href="input_ht_xpander.php"style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		

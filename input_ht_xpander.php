@@ -12,7 +12,7 @@ $pesan = '';
 $teknisi_options = ''; // Variable to store technician options
 
 // Fetch technician names from the database
-$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE heating = 'YES'";
+$sql_teknisi = "SELECT nama_teknisi FROM teknisi WHERE posisi = 'Heating'";
 $result_teknisi = $koneksi->query($sql_teknisi);
 
 if ($result_teknisi->num_rows > 0) {
@@ -35,19 +35,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$cdp = isset($_POST['cdp']) ? $_POST['cdp'] : '';
     $cbg = isset($_POST['cbg']) ? $_POST['cbg'] : '';
     
+	$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	
     $sql = "INSERT INTO ht_xpander (tanggal,shift,nama_teknisi , tdp, tbg, hdp, hbg, cdp, cbg)
             VALUES ('$tanggal', '$shift','$nama_teknisi',  '$tdp', '$tbg', '$hdp', '$hbg', '$cdp', '$cbg')";
 
-    if ($koneksi->query($sql) === TRUE) {
+       if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        
+
+        // Insert data into histori_admin table
+        $admin_username = $_SESSION['username'];
+        $action = "insert"; 
+        $admin_data = $tanggal . '+' . $shift . '+' . $nama_teknisi . '+' . $tdp . '+' . $tbg . '+' . $hdp . '+' . $hbg . '+' . $cdp . '+' . $cbg ;
+        $tanggal_input = date("Y-m-d H:i:s");
+
+        $sql_history = $koneksi->prepare("INSERT INTO histori_activity (user, action, data, tanggal, url) VALUES (?, ?, ?, ?, ?)");
+        $sql_history->bind_param("sssss", $admin_username, $action, $admin_data, $tanggal_input, $url);
+
+        if ($sql_history->execute()) {
+            echo "History inserted successfully";
+        } else {
+            echo "Error inserting history: " . $sql_history->error;
+        }
+
         header("Location: stok_ht_xpander.php");
         exit(); 
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
-
 
 $koneksi->close();
 ?>
@@ -183,7 +199,6 @@ $koneksi->close();
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">

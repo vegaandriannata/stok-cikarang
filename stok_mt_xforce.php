@@ -11,6 +11,7 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit();
 }
+$userName = $_SESSION['username'];	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +19,7 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Stok Heating</title>
-    <style>
+     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -28,6 +29,7 @@ if (isset($_GET['logout'])) {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 12px;
         }
 
         th, td {
@@ -42,7 +44,7 @@ if (isset($_GET['logout'])) {
         }
 
         .button-container {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .button-container a, .button-container button {
@@ -58,9 +60,8 @@ if (isset($_GET['logout'])) {
         .button-container a:hover, .button-container button:hover {
             background-color: #45a049;
         }
-		
-		
-		 .filter-form {
+
+       .filter-form {
         display: flex; /* Use flexbox to create a horizontal layout */
 		display: none;
         align-items: center; /* Align items vertically in the center */
@@ -101,7 +102,7 @@ if (isset($_GET['logout'])) {
             background-color: #212529; /* Green color */
             color: white;
         }
-		.button-container a.logout {
+.button-container a.logout {
     background-color: #f44336;
     color: white;
     text-decoration: none;
@@ -114,15 +115,16 @@ if (isset($_GET['logout'])) {
     background-color: #d32f2f;
 }
 .stok-masuk {
-    background-color: #00FF00; /* Green color for "Stok Masuk" */
+    background-color: #00FF00; 
 }
 
 .stok-keluar {
-    background-color: #FF0000; /* Red color for "Stok Keluar" */
+    background-color: #FF0000; 
 }
-.stok-masuk-dari-line {
-    background-color: #0000FF; /* Red color for "Stok Keluar" */
+.stok-masuk-line {
+    background-color: #0000FF; 
 }
+		
     </style>
 	<style>
     body {
@@ -138,6 +140,11 @@ if (isset($_GET['logout'])) {
     h1 {
         text-align: center;
         margin: 20px 0;
+    }
+	h3 {
+        text-align: right;
+        margin: 20px 0;
+		
     }
 
     .container {
@@ -198,6 +205,33 @@ if (isset($_GET['logout'])) {
         flex: 1;
         background-color: white; /* White background color for content */
     }
+	.inner-header {
+            display: flex;
+            justify-content: space-between;
+			align-items: center;
+        }
+.inner-header {
+        background-color: #fff; /* Dark background color */
+       
+        box-sizing: border-box;
+        color: #000;
+    }
+	
+	
+        .inner-header h2,
+        .inner-header h3,
+		.inner-header h3 img {
+            margin-right: 10px;
+        }
+		.inner-header h3 {
+            display: flex;
+            align-items: center;
+        }
+
+        .inner-header h3 img {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+		
     </style>
 </head>
 <body>
@@ -216,19 +250,28 @@ if (isset($_GET['logout'])) {
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
                 <a href="logout.php">Logout</a>
             </div>
         </div>
+
 <div class="content">
-    <h2>Dashboard Stok Bahan Mentah Xforce</h2>
+<div class="inner-header">
+<div>
+     <h2>Dashboard Stok Bahan Mentah Xforce </h2>
+	 </div>
+	 
+	 <div class="inner-header">
+		
+        <h3><img style="max-width:30px; "src="asset/image/profile1.png"><?php echo $userName; ?></h3>
+    </div>
+	  </div>
+	
     <div class="button-container">
 	<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_mt_xforce.php" style="margin-right:1%;">Reset Filter</a>
-        <a href="dashboard-stok.php" style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_mt_xforce.php" style="margin-right:1%;">Input Stok </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		
@@ -346,7 +389,7 @@ if (isset($_GET['logout'])) {
 					} elseif ($row["keterangan"] == "Stok Keluar") {
 						echo "<td class='stok-keluar'>" . $no . "</td>";
 					}elseif ($row["keterangan"] == "Stok Masuk Dari Line") {
-						echo "<td class='stok-masuk-dari-line'>" . $no . "</td>";
+						echo "<td class='stok-masuk-line'>" . $no . "</td>";
 					}
                    
                     echo "<td>" . $row["tanggal"] . "</td>";

@@ -1,81 +1,102 @@
 <?php
-// register_process.php
+session_start();
+// Sisipkan koneksi.php
 include 'koneksi.php';
 
+$posisi = '';
+// Proses form jika form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nama = $_POST['nama']; 
-	$username = $_POST['username'];
-    $password = $_POST['password'];
+    // Ambil nilai dari form
+    $nama = $_POST["nama"];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-    // Insert user data into the database
-    $sql = "INSERT INTO users (nama, username, password) VALUES ('$nama','$username', '$password')";
-    $result = mysqli_query($koneksi, $sql);
+    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
+    // Query untuk insert data ke tabel teknisi
+    $query = "INSERT INTO users (nama, username , password) VALUES ('$nama', '$username', '$password')";
+
+    // Eksekusi query
+    $result = mysqli_query($koneksi, $query);
+
+    // Cek apakah data berhasil disimpan
     if ($result) {
-        echo "Registration successful. <a href='list_admin.php'>Kembali ke list admin</a>";
+        // Insert data into histori_admin table
+        $admin_username = $_SESSION['username'];
+        $action = "insert";
+        $admin_data = $nama . '+' . $username . '+' . $password;
+        $tanggal_input = date("Y-m-d H:i:s");
+
+        $sql_history = $koneksi->prepare("INSERT INTO histori_activity (user, action, data, tanggal, url) VALUES (?, ?, ?, ?, ?)");
+        $sql_history->bind_param("sssss", $admin_username, $action, $admin_data, $tanggal_input, $url);
+
+        if ($sql_history->execute()) {
+            $pesan = "Data admin berhasil ditambahkan.";
+
+            // Redirect to the list_admin.php page
+            header("Location: list_admin.php");
+            exit();
+        } else {
+            $pesan = "Error inserting history: " . $sql_history->error;
+        }
     } else {
-        echo "Error: " . mysqli_error($koneksi);
+        $pesan = "Error: " . mysqli_error($koneksi);
     }
 }
 ?>
 
-<!-- register.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Admin</title>
+    <title>Form Input Admin</title>
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             display: flex;
-            
             height: 100vh;
-        }
-
-        form {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
-			
         }
 
         h2 {
             color: #333;
         }
 
+        
+		form {
+			background-color: #ffffff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			max-width: 600px;
+			margin: 0 auto;
+		}	
+
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
             box-sizing: border-box;
         }
 
-        input[type="submit"] {
+        button {
             background-color: #4caf50;
-            color: #ffffff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        input[type="submit"]:hover {
+        button:hover {
             background-color: #45a049;
-        }
-
-        .error-message {
-            color: red;
-            margin-bottom: 10px;
         }
     </style>
 	<style>
@@ -163,34 +184,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="menu">
-                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Laporan Stok Gudang Xpander</a>
-                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Laporan Stok Gudang Xforce</a>
-                <a href="stok_claim_xpander.php">Laporan Stok Claim Xpander</a>
-                <a href="stok_claim_xforce.php">Laporan Stok Claim Xforce</a>
-                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Laporan Stok Heating Xpander</a>
-                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Laporan Stok Heating Xforce</a>
+                <a href="stok_mt_xpander.php?produk=xpander&jenis=bahan_mentah">Stok Gudang Xpander</a>
+                <a href="stok_mt_xforce.php?produk=xforce&jenis=bahan_mentah">Stok Gudang Xforce</a>
+                <a href="stok_claim_xpander.php">Stok Claim Xpander</a>
+                <a href="stok_claim_xforce.php">Stok Claim Xforce</a>
+                <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
+                <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
-                <a href="?logout">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </div>
 <div class="content">
-    <form action="" method="post">
-        <h2>Register Admin</h2>
 
-        <label for="nama">Nama:</label>
-        <input type="text" name="nama" required>
+
+
+
+
+<form action="" method="post">
+        <h2>Tambah Data Admin</h2>
+
+        <label for="nama">Nama :</label>
+        <input type="text" name="nama" required> 
+        <label for="username">Username :</label>
+        <input type="text" name="username" required> 
+        <label for="password">Password :</label>
+        <input type="password" name="password" required> 
 		
-		<label for="username">Username:</label>
-        <input type="text" name="username" required>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-
-        <input type="submit" value="Register">
+		
+		<button type="submit">Tambah Teknisi</button>
+		<a href="list_admin.php">Kembali</a>
     </form>
 </div>
 </body>

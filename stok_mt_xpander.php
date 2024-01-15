@@ -121,6 +121,9 @@ $userName = $_SESSION['username'];
 .stok-keluar {
     background-color: #FF0000; /* Red color for "Stok Keluar" */
 }
+.stok-masuk-line {
+    background-color: #0000FF; /* Red color for "Stok Keluar" */
+}
 		
     </style>
 	<style>
@@ -255,7 +258,6 @@ $userName = $_SESSION['username'];
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -276,7 +278,6 @@ $userName = $_SESSION['username'];
     <div class="button-container">
 		<a href="javascript:void(0);" onclick="toggleFilterForm()">Filter</a>
 		<a href="stok_mt_xpander.php" style="margin-right:1%;">Reset Filter</a>
-        <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_mt_xpander.php" style="margin-right:1%;">Input Stok</a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		
@@ -402,6 +403,8 @@ $userName = $_SESSION['username'];
 							echo "<td class='stok-masuk'>" . $no . "</td>";
 						} elseif ($row["keterangan"] == "Stok Keluar") {
 							echo "<td class='stok-keluar'>" . $no . "</td>";
+						}elseif ($row["keterangan"] == "Stok Masuk Dari Line") {
+							echo "<td class='stok-masuk-line'>" . $no . "</td>";
 						}
 
 						

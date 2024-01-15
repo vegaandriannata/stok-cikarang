@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     $nama_teknisi = isset($_POST['nama_teknisi']) ? $_POST['nama_teknisi'] : '';
-
+	$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $sql = "INSERT INTO claim_xforce
         (tanggal, shift, line, keterangan, tipe_mobil, nama_teknisi, status, no_rangka, 
          kdp, kbg, kpkr, kpkn, kskr, kskn,  kmkr, kmkn,
@@ -72,14 +72,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($koneksi->query($sql) === TRUE) {
         $pesan = "Data berhasil disimpan.";
-        
+
+        // Insert data into histori_admin table
+        $admin_username = $_SESSION['username'];
+        $action = "insert"; 
+        $admin_data = $tanggal . '+' . $shift. '+' . $nama_teknisi . '+' . $keterangan . '+' . $status. '+' . $line. '+' . $tipe_mobil. '+' . $no_rangka. '+' . $kdp. '+' . $alasan_kdp. '+' . $kbg. '+' . $alasan_kbg. '+' . $kpkr. '+' . $alasan_kpkr. '+' . $kpkn. '+' . $alasan_kpkn. '+' . $kskr. '+' . $alasan_kskr. '+' . $kskn. '+' . $alasan_kskn. '+' . $kmkr. '+' . $alasan_kmkr. '+' . $kmkn. '+' . $alasan_kmkn;
+        $tanggal_input = date("Y-m-d H:i:s");
+
+        $sql_history = $koneksi->prepare("INSERT INTO histori_activity (user, action, data, tanggal, url) VALUES (?, ?, ?, ?, ?)");
+        $sql_history->bind_param("sssss", $admin_username, $action, $admin_data, $tanggal_input, $url);
+
+        if ($sql_history->execute()) {
+            echo "History inserted successfully";
+        } else {
+            echo "Error inserting history: " . $sql_history->error;
+        }
+
         header("Location: stok_claim_xforce.php");
         exit(); 
     } else {
         $pesan = "Error: " . $sql . "<br>" . $koneksi->error;
     }
 }
-
 
 $koneksi->close();
 ?>
@@ -215,7 +229,6 @@ $koneksi->close();
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">

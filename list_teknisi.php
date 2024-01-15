@@ -1,3 +1,16 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || (isset($_SESSION['timeout']) && time() > $_SESSION['timeout'])) {
+    header("Location: login.php");
+    exit();
+}
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+$userName = $_SESSION['username'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -134,6 +147,32 @@
         flex: 1;
         background-color: white; /* White background color for content */
     }
+	.inner-header {
+            display: flex;
+            justify-content: space-between;
+			align-items: center;
+        }
+.inner-header {
+        background-color: #fff; /* Dark background color */
+       
+        box-sizing: border-box;
+        color: #000;
+    }
+	
+	
+        .inner-header h2,
+        .inner-header h3,
+		.inner-header h3 img {
+            margin-right: 10px;
+        }
+		.inner-header h3 {
+            display: flex;
+            align-items: center;
+        }
+
+        .inner-header h3 img {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
     </style>
 </head>
 <body>
@@ -152,7 +191,6 @@
                 <a href="stok_ht_xpander.php?produk=xpander&jenis=heating">Stok Heating Xpander</a>
                 <a href="stok_ht_xforce.php?produk=xforce&jenis=heating">Stok Heating Xforce</a>
                 <a href="list_teknisi.php">List Teknisi</a>
-                <a href="list_teknisi_heating.php">List Teknisi Heating</a>
                 <a href="list_admin.php">List Admin</a>
             </div>
             <div class="logout">
@@ -160,10 +198,18 @@
             </div>
         </div>
 <div class="content">
-<h2>Dashboard Teknisi</h2>	
+<div class="inner-header">
+<div>
+     <h2>Dashboard Stok Bahan Mentah Xforce </h2>
+	 </div>
+	 
+	 <div class="inner-header">
+		
+        <h3><img style="max-width:30px; "src="asset/image/profile1.png"><?php echo $userName; ?></h3>
+    </div>
+	  </div>
 <div class="button-container">
 	
-        <a href="dashboard-stok.php"style="margin-right:1%;">Dashboard Stok</a>
         <a href="input_teknisi.php"style="margin-right:1%;">Input Teknisi </a>
 		<button onclick="exportToExcel()">Export to Excel</button>
 		
@@ -184,7 +230,11 @@ $result = mysqli_query($koneksi, $query);
 if (mysqli_num_rows($result) > 0) {
     // Tampilkan data dalam tabel
     echo "<table>";
-    echo "<tr><th>No</th><th>Nama Teknisi</th></tr>";
+    echo "<tr>
+	<th>No</th>
+	<th>Nama Teknisi</th>
+	<th>Posisi</th>
+	</tr>";
 
     $no = 1; // Inisialisasi nomor urut
 
@@ -193,6 +243,7 @@ if (mysqli_num_rows($result) > 0) {
         echo "<td>" . $no++ . "</td>";
        
         echo "<td>" . $row["nama_teknisi"] . "</td>";
+        echo "<td>" . $row["posisi"] . "</td>";
         echo "</tr>";
     }
 
